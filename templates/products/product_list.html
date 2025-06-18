@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Products - Farm2Market{% endblock %}
+
+{% block hero %}
+<section class="hero-section outline-hero">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h1 class="display-5 outline-heading">Fresh Farm Products</h1>
+                <p class="lead outline-text">Discover our selection of fresh, locally-sourced produce</p>
+            </div>
+            <div class="col-lg-4">
+                <div class="search-box">
+                    <form class="d-flex">
+                        <input class="form-control outline-form-control me-2" type="search" placeholder="Search products..." aria-label="Search">
+                        <button class="btn btn-outline-primary outline-btn" type="submit">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block content %}
+<!-- Filter Section -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card outline-card">
+            <div class="card-body">
+                <h5 class="outline-heading mb-3">Filter Products</h5>
+                <div class="row">
+                    <div class="col-md-3">
+                        <select class="form-select outline-form-control">
+                            <option selected>All Categories</option>
+                            <option value="vegetables">Vegetables</option>
+                            <option value="fruits">Fruits</option>
+                            <option value="grains">Grains</option>
+                            <option value="dairy">Dairy</option>
+                            <option value="poultry">poultry</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <select class="form-select outline-form-control">
+                            <option selected>Price Range</option>
+                            <option value="0-10">$0 - $10</option>
+                            <option value="10-25">$10 - $25</option>
+                            <option value="25-50">$25 - $50</option>
+                            <option value="50+">$50+</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <select class="form-select outline-form-control">
+                            <option selected>Sort By</option>
+                            <option value="name">Name</option>
+                            <option value="price">Price</option>
+                            <option value="newest">Newest</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <button class="btn btn-outline-primary outline-btn w-100">
+                            <i class="fas fa-filter me-2"></i>Apply Filters
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Products Grid -->
+ {% for product in products %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+    {% comment %} <div class="col-lg-4 col-md-6 mb-4"> {% endcomment %}
+        <div class="card product-card outline-hover">
+            <div class="product-image">
+                {% if product.image %}
+                    <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+                {% else %}
+                    <i class="fas fa-apple-alt fa-4x text-success opacity-50"></i>
+                {% endif %}
+            </div>
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <h5 class="product-title">{{ product.name }}</h5>
+                    {% if product.is_organic %}
+                        <span class="badge bg-success">Organic</span>
+                    {% endif %}
+                </div>
+                <p class="card-text outline-text">{{ product.description|truncatewords:15 }}</p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="product-price">${{ product.price }}</span>
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-sm btn-outline-primary outline-btn">
+                            <i class="fas fa-heart"></i>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-success outline-btn">
+                            <i class="fas fa-shopping-cart me-1"></i>Add to Cart
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <div class="card outline-card text-center">
+            <div class="card-body">
+                <i class="fas fa-seedling fa-4x text-muted mb-3"></i>
+                <h5 class="outline-heading">No Products Found</h5>
+                <p class="outline-text">Check back soon for fresh products!</p>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+
+<!-- Pagination -->
+<div class="row mt-4">
+    <div class="col-12">
+        <nav aria-label="Product pagination">
+            <ul class="pagination justify-content-center">
+                <li class="page-item">
+                    <a class="page-link outline-link" href="#" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                <li class="page-item active">
+                    <a class="page-link bg-success border-success" href="#">1</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link outline-link" href="#">2</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link outline-link" href="#">3</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link outline-link" href="#" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+{% endblock %}
