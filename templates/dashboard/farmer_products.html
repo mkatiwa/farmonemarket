@@ -1,0 +1,239 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Products - Farmer Dashboard{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3 col-lg-2 px-0">
+            <div class="bg-dark min-vh-100">
+                <div class="p-3">
+                    <h5 class="text-white">Farmer Panel</h5>
+                    <hr class="text-white">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="{% url 'dashboard:farmer' %}">
+                                <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white active" href="{% url 'dashboard:farmer_products' %}">
+                                <i class="fas fa-seedling me-2"></i>My Products
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="{% url 'products:add' %}">
+                                <i class="fas fa-plus me-2"></i>Add Product
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="{% url 'dashboard:farmer_orders' %}">
+                                <i class="fas fa-shopping-bag me-2"></i>Orders
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="{% url 'dashboard:farmer_analytics' %}">
+                                <i class="fas fa-chart-line me-2"></i>Analytics
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="{% url 'dashboard:farmer_inventory' %}">
+                                <i class="fas fa-boxes me-2"></i>Inventory
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="{% url 'profiles:detail' %}">
+                                <i class="fas fa-user me-2"></i>Profile
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-9 col-lg-10">
+            <div class="p-4">
+                <!-- Header -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>My Products</h2>
+                    <a href="{% url 'products:add' %}" class="btn btn-success">
+                        <i class="fas fa-plus me-2"></i>Add New Product
+                    </a>
+                </div>
+
+                <!-- Filters -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <form method="get" class="row g-3">
+                            <div class="col-md-3">
+                                <label for="status" class="form-label">Status</label>
+                                <select name="status" id="status" class="form-select">
+                                    <option value="all" {% if status_filter == 'all' %}selected{% endif %}>All Statuses</option>
+                                    <option value="available" {% if status_filter == 'available' %}selected{% endif %}>Available</option>
+                                    <option value="out_of_stock" {% if status_filter == 'out_of_stock' %}selected{% endif %}>Out of Stock</option>
+                                    <option value="hidden" {% if status_filter == 'hidden' %}selected{% endif %}>Hidden</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="category" class="form-label">Category</label>
+                                <select name="category" id="category" class="form-select">
+                                    <option value="all" {% if category_filter == 'all' %}selected{% endif %}>All Categories</option>
+                                    {% for category in categories %}
+                                        <option value="{{ category.id }}" {% if category_filter == category.id|stringformat:"s" %}selected{% endif %}>{{ category.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="sort" class="form-label">Sort By</label>
+                                <select name="sort" id="sort" class="form-select">
+                                    <option value="name" {% if sort_by == 'name' %}selected{% endif %}>Name (A-Z)</option>
+                                    <option value="price_low" {% if sort_by == 'price_low' %}selected{% endif %}>Price (Low to High)</option>
+                                    <option value="price_high" {% if sort_by == 'price_high' %}selected{% endif %}>Price (High to Low)</option>
+                                    <option value="stock_low" {% if sort_by == 'stock_low' %}selected{% endif %}>Stock (Low to High)</option>
+                                    <option value="stock_high" {% if sort_by == 'stock_high' %}selected{% endif %}>Stock (High to Low)</option>
+                                    <option value="newest" {% if sort_by == 'newest' %}selected{% endif %}>Newest First</option>
+                                    <option value="oldest" {% if sort_by == 'oldest' %}selected{% endif %}>Oldest First</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="search" class="form-label">Search</label>
+                                <div class="input-group">
+                                    <input type="text" name="search" id="search" class="form-control" placeholder="Search products..." value="{{ search_query }}">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Products Table -->
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">Product List</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if products %}
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Image</th>
+                                            <th>Name</th>
+                                            <th>Category</th>
+                                            <th>Price</th>
+                                            <th>Stock</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for product in products %}
+                                        <tr>
+                                            <td>
+                                                {% if product.image %}
+                                                    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="img-thumbnail" style="width: 50px; height: 50px; object-fit: cover;">
+                                                {% else %}
+                                                    <div class="bg-light rounded d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                                        <i class="fas fa-seedling text-success"></i>
+                                                    </div>
+                                                {% endif %}
+                                            </td>
+                                            <td>{{ product.name }}</td>
+                                            <td>{{ product.category.name }}</td>
+                                            <td>${{ product.price }}</td>
+                                            <td>
+                                                {% if product.stock_quantity <= 5 and product.stock_quantity > 0 %}
+                                                    <span class="badge bg-warning">{{ product.stock_quantity }}</span>
+                                                {% elif product.stock_quantity == 0 %}
+                                                    <span class="badge bg-danger">{{ product.stock_quantity }}</span>
+                                                {% else %}
+                                                    <span class="badge bg-success">{{ product.stock_quantity }}</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {% if product.status == 'available' %}
+                                                    <span class="badge bg-success">Available</span>
+                                                {% elif product.status == 'out_of_stock' %}
+                                                    <span class="badge bg-danger">Out of Stock</span>
+                                                {% else %}
+                                                    <span class="badge bg-secondary">Hidden</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                <div class="btn-group" role="group">
+                                                    <a href="{% url 'products:detail' product.id %}" class="btn btn-sm btn-outline-primary" title="View">
+                                                        <i class="fas fa-eye"></i>
+                                                    </a>
+                                                    <a href="{% url 'products:edit' product.id %}" class="btn btn-sm btn-outline-success" title="Edit">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                    <button type="button" class="btn btn-sm btn-outline-danger" title="Delete" data-bs-toggle="modal" data-bs-target="#deleteModal{{ product.id }}">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                                
+                                                <!-- Delete Modal -->
+                                                <div class="modal fade" id="deleteModal{{ product.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ product.id }}" aria-hidden="true">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="deleteModalLabel{{ product.id }}">Confirm Delete</h5>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                Are you sure you want to delete <strong>{{ product.name }}</strong>? This action cannot be undone.
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                                <form action="{% url 'products:delete' product.id %}" method="post">
+                                                                    {% csrf_token %}
+                                                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <div class="text-center py-5">
+                                <i class="fas fa-seedling fa-4x text-muted mb-3"></i>
+                                <h5>No products found</h5>
+                                <p class="text-muted">Try adjusting your filters or add a new product.</p>
+                                <a href="{% url 'products:add' %}" class="btn btn-success mt-3">
+                                    <i class="fas fa-plus me-2"></i>Add New Product
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Auto-submit form when select fields change
+    document.addEventListener('DOMContentLoaded', function() {
+        const filterForm = document.querySelector('form');
+        const selectFields = filterForm.querySelectorAll('select');
+        
+        selectFields.forEach(select => {
+            select.addEventListener('change', function() {
+                filterForm.submit();
+            });
+        });
+    });
+</script>
+{% endblock %}

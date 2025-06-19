@@ -1,0 +1,311 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Analytics - Farmer Dashboard{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3 col-lg-2 px-0">
+            <div class="bg-dark min-vh-100">
+                <div class="p-3">
+                    <h5 class="text-white">Farmer Panel</h5>
+                    <hr class="text-white">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="{% url 'dashboard:farmer' %}">
+                                <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="{% url 'dashboard:farmer_products' %}">
+                                <i class="fas fa-seedling me-2"></i>My Products
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="{% url 'products:add' %}">
+                                <i class="fas fa-plus me-2"></i>Add Product
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="{% url 'dashboard:farmer_orders' %}">
+                                <i class="fas fa-shopping-bag me-2"></i>Orders
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white active" href="{% url 'dashboard:farmer_analytics' %}">
+                                <i class="fas fa-chart-line me-2"></i>Analytics
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="{% url 'dashboard:farmer_inventory' %}">
+                                <i class="fas fa-boxes me-2"></i>Inventory
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="{% url 'profiles:detail' %}">
+                                <i class="fas fa-user me-2"></i>Profile
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-9 col-lg-10">
+            <div class="p-4">
+                <!-- Header -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>Sales Analytics</h2>
+                    <div class="btn-group">
+                        <a href="?period=week" class="btn btn-outline-primary {% if period == 'week' %}active{% endif %}">Week</a>
+                        <a href="?period=month" class="btn btn-outline-primary {% if period == 'month' %}active{% endif %}">Month</a>
+                        <a href="?period=year" class="btn btn-outline-primary {% if period == 'year' %}active{% endif %}">Year</a>
+                    </div>
+                </div>
+
+                <!-- Revenue Summary -->
+                <div class="row mb-4">
+                    <div class="col-md-4 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                <h5 class="card-title text-muted">Total Revenue</h5>
+                                <h2 class="display-4 text-success">${{ total_revenue|floatformat:2 }}</h2>
+                                <p class="text-muted">Lifetime earnings</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                <h5 class="card-title text-muted">Average Order Value</h5>
+                                <h2 class="display-4 text-primary">${{ avg_order_value|floatformat:2 }}</h2>
+                                <p class="text-muted">Per order</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                <h5 class="card-title text-muted">
+                                    {% if period == 'week' %}Weekly{% elif period == 'year' %}Annual{% else %}Monthly{% endif %} Revenue
+                                </h5>
+                                <h2 class="display-4 text-info">
+                                    ${{ sales_data|last|get:'sales'|floatformat:2 }}
+                                </h2>
+                                <p class="text-muted">
+                                    {% if period == 'week' %}Last 7 days{% elif period == 'year' %}Last 12 months{% else %}Last 30 days{% endif %}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sales Chart -->
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">
+                            {% if period == 'week' %}Weekly{% elif period == 'year' %}Annual{% else %}Monthly{% endif %} Sales Trend
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="salesChart" height="300"></canvas>
+                    </div>
+                </div>
+
+                <!-- Top Products and Category Sales -->
+                <div class="row">
+                    <!-- Top Products -->
+                    <div class="col-lg-7 mb-4">
+                        <div class="card h-100">
+                            <div class="card-header bg-success text-white">
+                                <h5 class="mb-0">Top Selling Products</h5>
+                            </div>
+                            <div class="card-body">
+                                {% if top_products %}
+                                    <div class="table-responsive">
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>Product</th>
+                                                    <th class="text-center">Units Sold</th>
+                                                    <th class="text-end">Revenue</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for product in top_products %}
+                                                <tr>
+                                                    <td>{{ forloop.counter }}</td>
+                                                    <td>{{ product.product_name }}</td>
+                                                    <td class="text-center">{{ product.total_sold }}</td>
+                                                    <td class="text-end">${{ product.revenue|floatformat:2 }}</td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                {% else %}
+                                    <div class="text-center py-5">
+                                        <i class="fas fa-chart-bar fa-4x text-muted mb-3"></i>
+                                        <h5>No sales data yet</h5>
+                                        <p class="text-muted">Sales data will appear here once you make sales.</p>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Category Sales -->
+                    <div class="col-lg-5 mb-4">
+                        <div class="card h-100">
+                            <div class="card-header bg-info text-white">
+                                <h5 class="mb-0">Sales by Category</h5>
+                            </div>
+                            <div class="card-body">
+                                {% if category_sales %}
+                                    <canvas id="categoryChart" height="250"></canvas>
+                                {% else %}
+                                    <div class="text-center py-5">
+                                        <i class="fas fa-chart-pie fa-4x text-muted mb-3"></i>
+                                        <h5>No category data yet</h5>
+                                        <p class="text-muted">Category sales data will appear here once you make sales.</p>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Parse the sales data from the server
+        const salesData = {{ sales_data|safe }};
+        
+        // Extract dates and sales amounts
+        const dates = salesData.map(item => item.date);
+        const sales = salesData.map(item => item.sales);
+        
+        // Create the sales chart
+        const salesCtx = document.getElementById('salesChart').getContext('2d');
+        const salesChart = new Chart(salesCtx, {
+            type: 'bar',
+            data: {
+                labels: dates,
+                datasets: [{
+                    label: 'Sales ($)',
+                    data: sales,
+                    backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return '$' + value;
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return '$' + context.raw.toFixed(2);
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        
+        {% if category_sales %}
+        // Parse category sales data
+        const categoryData = [
+            {% for category in category_sales %}
+                {
+                    name: "{{ category.product__category__name|default:'Uncategorized' }}",
+                    value: {{ category.total|floatformat:2 }}
+                },
+            {% endfor %}
+        ];
+        
+        // Extract category names and values
+        const categoryNames = categoryData.map(item => item.name);
+        const categoryValues = categoryData.map(item => item.value);
+        
+        // Create the category chart
+        const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+        const categoryChart = new Chart(categoryCtx, {
+            type: 'pie',
+            data: {
+                labels: categoryNames,
+                datasets: [{
+                    data: categoryValues,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.7)',
+                        'rgba(54, 162, 235, 0.7)',
+                        'rgba(255, 206, 86, 0.7)',
+                        'rgba(75, 192, 192, 0.7)',
+                        'rgba(153, 102, 255, 0.7)',
+                        'rgba(255, 159, 64, 0.7)',
+                        'rgba(199, 199, 199, 0.7)',
+                        'rgba(83, 102, 255, 0.7)',
+                        'rgba(40, 159, 64, 0.7)',
+                        'rgba(210, 199, 199, 0.7)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)',
+                        'rgba(199, 199, 199, 1)',
+                        'rgba(83, 102, 255, 1)',
+                        'rgba(40, 159, 64, 1)',
+                        'rgba(210, 199, 199, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label || '';
+                                const value = context.raw;
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = Math.round((value / total) * 100);
+                                return `${label}: $${value.toFixed(2)} (${percentage}%)`;
+                            }
+                        }
+                    },
+                    legend: {
+                        position: 'right',
+                    }
+                }
+            }
+        });
+        {% endif %}
+    });
+</script>
+{% endblock %}

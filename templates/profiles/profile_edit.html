@@ -1,0 +1,191 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Edit Profile - Farm2Market{% endblock %}
+
+{% block hero_height %}200px{% endblock %}
+
+{% block hero_content %}
+<h1 class="display-4 fw-bold mb-3">Edit Profile</h1>
+<p class="lead mb-4">Update your account information</p>
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0">Edit Profile</h4>
+            </div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    {% if form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        {% for error in form.non_field_errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Personal Information -->
+                    <div class="mb-4">
+                        <h5>Personal Information</h5>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="{{ form.first_name.id_for_label }}" class="form-label">First Name</label>
+                                {{ form.first_name }}
+                                {% if form.first_name.errors %}
+                                    <div class="text-danger">
+                                        {% for error in form.first_name.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="{{ form.last_name.id_for_label }}" class="form-label">Last Name</label>
+                                {{ form.last_name }}
+                                {% if form.last_name.errors %}
+                                    <div class="text-danger">
+                                        {% for error in form.last_name.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.email.id_for_label }}" class="form-label">Email</label>
+                            {{ form.email }}
+                            {% if form.email.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.email.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        {% if form.avatar %}
+                        <div class="mb-3">
+                            <label for="{{ form.avatar.id_for_label }}" class="form-label">Profile Picture</label>
+                            {{ form.avatar }}
+                            {% if form.avatar.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.avatar.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                            {% if profile.avatar %}
+                                <div class="mt-2">
+                                    <img src="{{ profile.avatar.url }}" alt="{{ user.get_full_name }}" class="img-thumbnail" style="max-height: 100px;">
+                                </div>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Contact Information -->
+                    <div class="mb-4">
+                        <h5>Contact Information</h5>
+                        <div class="mb-3">
+                            <label for="{{ form.phone.id_for_label }}" class="form-label">Phone Number</label>
+                            {{ form.phone }}
+                            {% if form.phone.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.phone.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.address.id_for_label }}" class="form-label">Address</label>
+                            {{ form.address }}
+                            {% if form.address.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.address.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <!-- Password Change -->
+                    <div class="mb-4">
+                        <h5>Change Password</h5>
+                        <p class="text-muted small">Leave blank if you don't want to change your password</p>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.current_password.id_for_label }}" class="form-label">Current Password</label>
+                            {{ form.current_password }}
+                            {% if form.current_password.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.current_password.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="{{ form.new_password1.id_for_label }}" class="form-label">New Password</label>
+                                {{ form.new_password1 }}
+                                {% if form.new_password1.errors %}
+                                    <div class="text-danger">
+                                        {% for error in form.new_password1.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="{{ form.new_password2.id_for_label }}" class="form-label">Confirm New Password</label>
+                                {{ form.new_password2 }}
+                                {% if form.new_password2.errors %}
+                                    <div class="text-danger">
+                                        {% for error in form.new_password2.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="{% url 'profiles:detail' %}" class="btn btn-outline-secondary me-md-2">Cancel</a>
+                        <button type="submit" class="btn btn-success">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Add Bootstrap classes to form fields
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add form-control class to all input, select, and textarea elements
+        const formControls = document.querySelectorAll('input:not([type="file"]), select, textarea');
+        formControls.forEach(element => {
+            element.classList.add('form-control');
+        });
+        
+        // Add form-control-file class to file input
+        const fileInputs = document.querySelectorAll('input[type="file"]');
+        fileInputs.forEach(element => {
+            element.classList.add('form-control');
+        });
+    });
+</script>
+{% endblock %}

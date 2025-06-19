@@ -1,0 +1,198 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ user.get_full_name }} Profile - Farm2Market{% endblock %}
+
+{% block hero_height %}200px{% endblock %}
+
+{% block hero_content %}
+<h1 class="display-4 fw-bold mb-3">User Profile</h1>
+<p class="lead mb-4">View and manage your account information</p>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- Profile Information -->
+    <div class="col-lg-4 mb-4">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0">Profile Information</h4>
+            </div>
+            <div class="card-body">
+                <div class="text-center mb-4">
+                    <div class="avatar-circle mx-auto mb-3">
+                        {% if profile.avatar %}
+                            <img src="{{ profile.avatar.url }}" alt="{{ user.get_full_name }}" class="rounded-circle img-fluid">
+                        {% else %}
+                            <div class="bg-light rounded-circle d-flex align-items-center justify-content-center" style="width: 150px; height: 150px; margin: 0 auto;">
+                                <i class="fas fa-user fa-4x text-success"></i>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <h5 class="mb-0">{{ user.get_full_name }}</h5>
+                    <p class="text-muted">
+                        {% if user.is_farmer %}
+                            <span class="badge bg-success">Farmer</span>
+                        {% elif user.is_buyer %}
+                            <span class="badge bg-primary">Buyer</span>
+                        {% endif %}
+                    </p>
+                </div>
+                
+                <div class="mb-3">
+                    <h6 class="text-muted mb-2">Contact Information</h6>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span><i class="fas fa-envelope me-2 text-muted"></i>Email:</span>
+                            <span>{{ user.email }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span><i class="fas fa-phone me-2 text-muted"></i>Phone:</span>
+                            <span>{{ user.phone|default:"Not provided" }}</span>
+                        </li>
+                        <li class="list-group-item">
+                            <span><i class="fas fa-map-marker-alt me-2 text-muted"></i>Address:</span>
+                            <p class="mb-0 mt-1">{{ user.address|default:"Not provided"|linebreaks }}</p>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="mb-3">
+                    <h6 class="text-muted mb-2">Account Information</h6>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span><i class="fas fa-calendar me-2 text-muted"></i>Joined:</span>
+                            <span>{{ user.created_at|date:"F j, Y" }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span><i class="fas fa-user-circle me-2 text-muted"></i>Role:</span>
+                            <span>{{ user.get_role_display }}</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="d-grid gap-2">
+                    <a href="{% url 'profiles:edit' %}" class="btn btn-outline-success">
+                        <i class="fas fa-edit me-2"></i>Edit Profile
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Additional Information -->
+    <div class="col-lg-8">
+        {% if user.is_farmer %}
+        <!-- Farmer Products -->
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">My Products</h4>
+            </div>
+            <div class="card-body">
+                {% if user.products.all %}
+                    <div class="row">
+                        {% for product in user.products.all %}
+                        <div class="col-md-6 mb-3">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center">
+                                        {% if product.image %}
+                                            <img src="{{ product.image.url }}" alt="{{ product.name }}" class="img-thumbnail me-3" style="width: 60px; height: 60px; object-fit: cover;">
+                                        {% else %}
+                                            <div class="bg-light rounded me-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                                                <i class="fas fa-seedling text-success"></i>
+                                            </div>
+                                        {% endif %}
+                                        <div>
+                                            <h6 class="mb-0">{{ product.name }}</h6>
+                                            <small class="text-muted">{{ product.category.name }}</small>
+                                            <p class="mb-0 text-success">${{ product.price }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer bg-light">
+                                    <div class="d-flex justify-content-between">
+                                        <a href="{% url 'products:detail' product.id %}" class="btn btn-sm btn-outline-primary">View</a>
+                                        <a href="#" class="btn btn-sm btn-outline-success">Edit</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div class="text-center mt-3">
+                        <a href="{% url 'products:add' %}" class="btn btn-success">
+                            <i class="fas fa-plus me-2"></i>Add New Product
+                        </a>
+                    </div>
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-seedling fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">No products yet</h5>
+                        <p class="text-muted">Start adding your farm products to sell them on Farm2Market!</p>
+                        <a href="{% url 'products:add' %}" class="btn btn-success mt-2">
+                            <i class="fas fa-plus me-2"></i>Add New Product
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+        
+        <!-- Recent Orders -->
+        <div class="card mb-4">
+            <div class="card-header bg-info text-white">
+                <h4 class="mb-0">Recent Orders</h4>
+            </div>
+            <div class="card-body">
+                {% if orders %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Order #</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                    <th>Total</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for order in orders %}
+                                <tr>
+                                    <td>{{ order.uuid|truncatechars:8 }}</td>
+                                    <td>{{ order.created_at|date:"M d, Y" }}</td>
+                                    <td>
+                                        <span class="badge bg-{% if order.order_status == 'pending' %}warning{% elif order.order_status == 'paid' %}info{% elif order.order_status == 'processing' %}primary{% elif order.order_status == 'shipped' %}info{% elif order.order_status == 'delivered' %}success{% elif order.order_status == 'cancelled' %}danger{% else %}secondary{% endif %}">
+                                            {{ order.get_order_status_display }}
+                                        </span>
+                                    </td>
+                                    <td>${{ order.total_price }}</td>
+                                    <td>
+                                        <a href="{% url 'orders:detail' order.uuid %}" class="btn btn-sm btn-outline-primary">View</a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="text-center mt-3">
+                        <a href="{% url 'orders:list' %}" class="btn btn-info text-white">
+                            <i class="fas fa-list me-2"></i>View All Orders
+                        </a>
+                    </div>
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-shopping-cart fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">No orders yet</h5>
+                        <p class="text-muted">Your order history will appear here once you make a purchase.</p>
+                        <a href="{% url 'products:list' %}" class="btn btn-info text-white mt-2">
+                            <i class="fas fa-shopping-basket me-2"></i>Browse Products
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

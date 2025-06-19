@@ -15,32 +15,37 @@
                     <hr class="text-white">
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link text-white active" href="#">
+                            <a class="nav-link text-white active" href="{% url 'dashboard:farmer' %}">
                                 <i class="fas fa-tachometer-alt me-2"></i>Dashboard
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-white" href="#">
+                            <a class="nav-link text-white" href="{% url 'dashboard:farmer_products' %}">
                                 <i class="fas fa-seedling me-2"></i>My Products
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-white" href="#">
+                            <a class="nav-link text-white" href="{% url 'products:add' %}">
                                 <i class="fas fa-plus me-2"></i>Add Product
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-white" href="#">
+                            <a class="nav-link text-white" href="{% url 'dashboard:farmer_orders' %}">
                                 <i class="fas fa-shopping-bag me-2"></i>Orders
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-white" href="#">
+                            <a class="nav-link text-white" href="{% url 'dashboard:farmer_analytics' %}">
                                 <i class="fas fa-chart-line me-2"></i>Analytics
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-white" href="#">
+                            <a class="nav-link text-white" href="{% url 'dashboard:farmer_inventory' %}">
+                                <i class="fas fa-boxes me-2"></i>Inventory
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="{% url 'profiles:detail' %}">
                                 <i class="fas fa-user me-2"></i>Profile
                             </a>
                         </li>
@@ -62,55 +67,174 @@
 
                 <!-- Statistics Cards -->
                 <div class="row mb-4">
-                    <div class="col-md-3 mb-3">
-                        <div class="card bg-primary text-white">
+                    <!-- Products Stats -->
+                    <div class="col-lg-6">
+                        <div class="card mb-4">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0"><i class="fas fa-seedling me-2"></i>Products</h5>
+                            </div>
                             <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <h4>{{ total_products }}</h4>
-                                        <p class="mb-0">Total Products</p>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <div class="d-flex justify-content-between align-items-center p-3 bg-light rounded">
+                                            <div>
+                                                <h4 class="mb-0">{{ total_products }}</h4>
+                                                <p class="text-muted mb-0">Total Products</p>
+                                            </div>
+                                            <div class="rounded-circle bg-primary p-3 text-white">
+                                                <i class="fas fa-seedling"></i>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <i class="fas fa-seedling fa-2x"></i>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="d-flex justify-content-between align-items-center p-3 bg-light rounded">
+                                            <div>
+                                                <h4 class="mb-0">{{ active_products }}</h4>
+                                                <p class="text-muted mb-0">Active Products</p>
+                                            </div>
+                                            <div class="rounded-circle bg-success p-3 text-white">
+                                                <i class="fas fa-check-circle"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="d-flex justify-content-between align-items-center p-3 bg-light rounded">
+                                            <div>
+                                                <h4 class="mb-0">{{ out_of_stock_products }}</h4>
+                                                <p class="text-muted mb-0">Out of Stock</p>
+                                            </div>
+                                            <div class="rounded-circle bg-danger p-3 text-white">
+                                                <i class="fas fa-times-circle"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="d-flex justify-content-between align-items-center p-3 bg-light rounded">
+                                            <div>
+                                                <h4 class="mb-0">{{ low_stock_products.count }}</h4>
+                                                <p class="text-muted mb-0">Low Stock Items</p>
+                                            </div>
+                                            <div class="rounded-circle bg-warning p-3 text-white">
+                                                <i class="fas fa-exclamation-triangle"></i>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-3 mb-3">
-                        <div class="card bg-success text-white">
+
+                    <!-- Orders Stats -->
+                    <div class="col-lg-6">
+                        <div class="card mb-4">
+                            <div class="card-header bg-info text-white">
+                                <h5 class="mb-0"><i class="fas fa-shopping-bag me-2"></i>Orders</h5>
+                            </div>
                             <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <h4>{{ active_products }}</h4>
-                                        <p class="mb-0">Active Products</p>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <div class="d-flex justify-content-between align-items-center p-3 bg-light rounded">
+                                            <div>
+                                                <h4 class="mb-0">{{ total_orders }}</h4>
+                                                <p class="text-muted mb-0">Total Orders</p>
+                                            </div>
+                                            <div class="rounded-circle bg-info p-3 text-white">
+                                                <i class="fas fa-shopping-bag"></i>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <i class="fas fa-check-circle fa-2x"></i>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="d-flex justify-content-between align-items-center p-3 bg-light rounded">
+                                            <div>
+                                                <h4 class="mb-0">{{ pending_orders }}</h4>
+                                                <p class="text-muted mb-0">Pending Orders</p>
+                                            </div>
+                                            <div class="rounded-circle bg-warning p-3 text-white">
+                                                <i class="fas fa-clock"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="d-flex justify-content-between align-items-center p-3 bg-light rounded">
+                                            <div>
+                                                <h4 class="mb-0">{{ processing_orders }}</h4>
+                                                <p class="text-muted mb-0">Processing</p>
+                                            </div>
+                                            <div class="rounded-circle bg-primary p-3 text-white">
+                                                <i class="fas fa-truck"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="d-flex justify-content-between align-items-center p-3 bg-light rounded">
+                                            <div>
+                                                <h4 class="mb-0">{{ completed_orders }}</h4>
+                                                <p class="text-muted mb-0">Completed</p>
+                                            </div>
+                                            <div class="rounded-circle bg-success p-3 text-white">
+                                                <i class="fas fa-check"></i>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-3 mb-3">
-                        <div class="card bg-info text-white">
+
+                    <!-- Revenue Stats -->
+                    <div class="col-lg-6">
+                        <div class="card mb-4">
+                            <div class="card-header bg-success text-white">
+                                <h5 class="mb-0"><i class="fas fa-dollar-sign me-2"></i>Revenue</h5>
+                            </div>
                             <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <h4>${{ monthly_revenue|floatformat:2 }}</h4>
-                                        <p class="mb-0">Monthly Revenue</p>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <div class="d-flex justify-content-between align-items-center p-3 bg-light rounded">
+                                            <div>
+                                                <h4 class="mb-0">${{ monthly_revenue|floatformat:2 }}</h4>
+                                                <p class="text-muted mb-0">Monthly Revenue</p>
+                                            </div>
+                                            <div class="rounded-circle bg-success p-3 text-white">
+                                                <i class="fas fa-calendar-alt"></i>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <i class="fas fa-dollar-sign fa-2x"></i>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="d-flex justify-content-between align-items-center p-3 bg-light rounded">
+                                            <div>
+                                                <h4 class="mb-0">${{ total_revenue|floatformat:2 }}</h4>
+                                                <p class="text-muted mb-0">Total Revenue</p>
+                                            </div>
+                                            <div class="rounded-circle bg-primary p-3 text-white">
+                                                <i class="fas fa-dollar-sign"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="d-flex justify-content-between align-items-center p-3 bg-light rounded">
+                                            <div>
+                                                <h4 class="mb-0">${{ avg_order_value|floatformat:2 }}</h4>
+                                                <p class="text-muted mb-0">Avg. Order Value</p>
+                                            </div>
+                                            <div class="rounded-circle bg-info p-3 text-white">
+                                                <i class="fas fa-chart-line"></i>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-3 mb-3">
-                        <div class="card bg-warning text-white">
+
+                    <!-- Sales Chart -->
+                    <div class="col-lg-6">
+                        <div class="card mb-4">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0"><i class="fas fa-chart-bar me-2"></i>Weekly Sales</h5>
+                            </div>
                             <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <h4>{{ low_stock_products.count }}</h4>
-                                        <p class="mb-0">Low Stock Items</p>
-                                    </div>
-                                    <i class="fas fa-exclamation-triangle fa-2x"></i>
-                                </div>
+                                <canvas id="salesChart" height="200"></canvas>
                             </div>
                         </div>
                     </div>
@@ -151,35 +275,45 @@
                     </div>
                 </div>
 
-                <!-- Recent Orders and Products -->
+                <!-- Recent Orders and Top Products -->
                 <div class="row">
-                    <div class="col-md-6">
-                        <div class="card">
-                            <div class="card-header">
-                                <h5>Recent Orders</h5>
+                    <!-- Recent Orders -->
+                    <div class="col-lg-7">
+                        <div class="card mb-4">
+                            <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0"><i class="fas fa-shopping-bag me-2"></i>Recent Orders</h5>
+                                <a href="{% url 'dashboard:farmer_orders' %}" class="btn btn-sm btn-light">View All</a>
                             </div>
                             <div class="card-body">
                                 {% if recent_orders %}
                                     <div class="table-responsive">
-                                        <table class="table table-sm">
+                                        <table class="table table-hover">
                                             <thead>
                                                 <tr>
                                                     <th>Order #</th>
                                                     <th>Customer</th>
+                                                    <th>Date</th>
                                                     <th>Amount</th>
                                                     <th>Status</th>
+                                                    <th>Action</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 {% for order in recent_orders %}
                                                 <tr>
-                                                    <td>#{{ order.id }}</td>
-                                                    <td>{{ order.user.username }}</td>
-                                                    <td>${{ order.total_amount }}</td>
+                                                    <td>{{ order.uuid|truncatechars:8 }}</td>
+                                                    <td>{{ order.customer.first_name }} {{ order.customer.last_name }}</td>
+                                                    <td>{{ order.created_at|date:"M d, Y" }}</td>
+                                                    <td>${{ order.total_price|floatformat:2 }}</td>
                                                     <td>
-                                                        <span class="badge bg-{% if order.status == 'completed' %}success{% elif order.status == 'pending' %}warning{% else %}secondary{% endif %}">
-                                                            {{ order.get_status_display }}
+                                                        <span class="badge {% if order.order_status == 'pending' %}bg-warning{% elif order.order_status == 'paid' %}bg-info{% elif order.order_status == 'processing' %}bg-primary{% elif order.order_status == 'shipped' %}bg-info{% elif order.order_status == 'delivered' %}bg-success{% elif order.order_status == 'cancelled' %}bg-danger{% else %}bg-secondary{% endif %}">
+                                                            {{ order.get_order_status_display }}
                                                         </span>
+                                                    </td>
+                                                    <td>
+                                                        <a href="{% url 'orders:detail' order.uuid %}" class="btn btn-sm btn-outline-primary">
+                                                            <i class="fas fa-eye"></i>
+                                                        </a>
                                                     </td>
                                                 </tr>
                                                 {% endfor %}
@@ -187,24 +321,69 @@
                                         </table>
                                     </div>
                                 {% else %}
-                                    <p class="text-muted">No recent orders found.</p>
+                                    <div class="text-center py-4">
+                                        <i class="fas fa-shopping-bag fa-3x text-muted mb-3"></i>
+                                        <h5 class="text-muted">No recent orders found</h5>
+                                        <p class="text-muted">Orders will appear here once customers place them.</p>
+                                    </div>
                                 {% endif %}
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <div class="card">
-                            <div class="card-header">
-                                <h5>Low Stock Alert</h5>
+
+                    <!-- Top Products -->
+                    <div class="col-lg-5">
+                        <div class="card mb-4">
+                            <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0"><i class="fas fa-trophy me-2"></i>Top Selling Products</h5>
+                                <a href="{% url 'dashboard:farmer_analytics' %}" class="btn btn-sm btn-light">View Analytics</a>
+                            </div>
+                            <div class="card-body">
+                                {% if top_products %}
+                                    <div class="table-responsive">
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Product</th>
+                                                    <th class="text-center">Sold</th>
+                                                    <th class="text-end">Revenue</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for product in top_products %}
+                                                <tr>
+                                                    <td>{{ product.product_name }}</td>
+                                                    <td class="text-center">{{ product.total_sold }}</td>
+                                                    <td class="text-end">${{ product.revenue|floatformat:2 }}</td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                {% else %}
+                                    <div class="text-center py-4">
+                                        <i class="fas fa-chart-bar fa-3x text-muted mb-3"></i>
+                                        <h5 class="text-muted">No sales data yet</h5>
+                                        <p class="text-muted">Sales data will appear here once you make sales.</p>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Low Stock Alert -->
+                        <div class="card mb-4">
+                            <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0"><i class="fas fa-exclamation-triangle me-2"></i>Low Stock Alert</h5>
+                                <a href="{% url 'dashboard:farmer_inventory' %}" class="btn btn-sm btn-light">Manage Inventory</a>
                             </div>
                             <div class="card-body">
                                 {% if low_stock_products %}
                                     <div class="table-responsive">
-                                        <table class="table table-sm">
+                                        <table class="table table-hover">
                                             <thead>
                                                 <tr>
                                                     <th>Product</th>
-                                                    <th>Stock</th>
+                                                    <th class="text-center">Stock</th>
                                                     <th>Action</th>
                                                 </tr>
                                             </thead>
@@ -212,11 +391,13 @@
                                                 {% for product in low_stock_products %}
                                                 <tr>
                                                     <td>{{ product.name }}</td>
-                                                    <td>
-                                                        <span class="badge bg-danger">{{ product.stock }}</span>
+                                                    <td class="text-center">
+                                                        <span class="badge bg-danger">{{ product.stock_quantity }}</span>
                                                     </td>
                                                     <td>
-                                                        <a href="#" class="btn btn-sm btn-outline-primary">Restock</a>
+                                                        <a href="{% url 'products:edit' product.id %}" class="btn btn-sm btn-outline-primary">
+                                                            <i class="fas fa-edit"></i> Update
+                                                        </a>
                                                     </td>
                                                 </tr>
                                                 {% endfor %}
@@ -224,7 +405,10 @@
                                         </table>
                                     </div>
                                 {% else %}
-                                    <p class="text-success">All products are well stocked!</p>
+                                    <div class="text-center py-3">
+                                        <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
+                                        <h5 class="text-success">All products are well stocked!</h5>
+                                    </div>
                                 {% endif %}
                             </div>
                         </div>
@@ -234,4 +418,57 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Parse the sales data from the server
+        const salesData = {{ sales_data|safe }};
+
+        // Extract dates and sales amounts
+        const dates = salesData.map(item => item.date);
+        const sales = salesData.map(item => item.sales);
+
+        // Create the sales chart
+        const ctx = document.getElementById('salesChart').getContext('2d');
+        const salesChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: dates,
+                datasets: [{
+                    label: 'Daily Sales ($)',
+                    data: sales,
+                    backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return '$' + value;
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return '$' + context.raw.toFixed(2);
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    });
+</script>
 {% endblock %}

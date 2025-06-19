@@ -70,22 +70,22 @@
                     {% if user.is_authenticated %}
 
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Home</a>
+                            <a class="nav-link" href="{% url 'home' %}">Home</a>
                         </li>
 
                          <li class="nav-item">
-                            <a class="nav-link" href="#">Products</a>
+                            <a class="nav-link" href="{% url 'products:list' %}">Products</a>
                         </li>
                         <!-- Cart -->
                         <li class="nav-item">
-                            <a class="nav-link" href="#">
+                            <a class="nav-link" href="{% url 'carts:detail' %}">
                                 <i class="fas fa-shopping-cart"></i> Cart
                             </a>
                         </li>
 
                         <!-- Orders -->
                         <li class="nav-item">
-                            <a class="nav-link" href="#">My Orders</a>
+                            <a class="nav-link" href="{% url 'orders:list' %}">My Orders</a>
                         </li>
 
                         <!-- Account/Dashboard -->
@@ -94,31 +94,31 @@
                                 <i class="fas fa-user"></i> {{ user.username }}
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="#">Dashboard</a></li>
+                                <li><a class="dropdown-item" href="{% url 'profiles:detail' %}">My Profile</a></li>
 
-{#                                {% if user.is_staff %}#}
-{#                                    <li><a class="dropdown-item" href="#">Admin Panel</a></li>#}
-{#                                {% endif %}#}
-
-                                {% if user.role == 'farmer' or user.farmer_profile %}
-                                    <li><a class="dropdown-item" href="#">Farmer Dashboard</a></li>
+                                {% if user.is_staff %}
+                                    <li><a class="dropdown-item" href="{% url 'admin:index' %}">Admin Panel</a></li>
                                 {% endif %}
 
-                                {% if user.role == 'buyer' or user.buyer_profile %}
-                                    <li><a class="dropdown-item" href="#">Buyer Dashboard</a></li>
+                                {% if user.is_farmer %}
+                                    <li><a class="dropdown-item" href="{% url 'dashboard:farmer' %}">Farmer Dashboard</a></li>
+                                {% endif %}
+
+                                {% if user.is_buyer %}
+                                    <li><a class="dropdown-item" href="{% url 'dashboard:buyer' %}">Buyer Dashboard</a></li>
                                 {% endif %}
 
                                 <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="{% url 'logout' %}>Logout</a></li>
+                                <li><a class="dropdown-item" href="{% url 'accounts:logout' %}">Logout</a></li>
                             </ul>
                         </li>
                     {% else %}
                         <!-- Login/Register -->
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Login</a>
+                            <a class="nav-link" href="{% url 'accounts:login' %}">Login</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Register</a>
+                            <a class="nav-link" href="{% url 'accounts:register' %}">Register</a>
                         </li>
                     {% endif %}
                 </ul>

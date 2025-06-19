@@ -21,11 +21,11 @@ class RegisterView(View):
         return render(request, 'accounts/register.html')
 
     def post(self, request):
+        """Handle POST requests for user registration"""
         data = request.POST
 
         # Check if passwords match
         if data.get('password') != data.get('password2'):
-            raise ValidationError('Passwords must match')
             messages.error(request, 'Passwords do not match')
             return render(request, 'accounts/register.html')
 
@@ -51,8 +51,7 @@ class RegisterView(View):
             messages.success(request, 'Registration successful. Please log in.')
             return redirect('accounts:login')
         except Exception as e:
-            raise e
-            messages.error(request, str(e))
+            messages.error(request, f"Registration failed: {str(e)}")
             return render(request, 'accounts/register.html')
 
 
@@ -64,29 +63,25 @@ class LoginView(View):
         return render(request, 'accounts/login.html')
 
     def post(self, request):
+        """Handle POST requests for user login"""
         email = request.POST.get('email')
         password = request.POST.get('password')
 
         user = authenticate(request, email=email, password=password)
 
         if user is not None:
-            # TODO activate user
+            if not user.is_active:
+                messages.error(request, 'Your account is not active. Please contact support.')
+                return render(request, 'accounts/login.html')
+
             login(request, user)
             messages.success(request, 'Login successful')
 
             # Redirect based on user role
             if user.is_farmer:
-                products = Product.objects.filter(user=user)
-                context = {
-                    "products": products,
-                }
-                return render(request, 'products/seller_product_list.html', context= context) #
+                return redirect('dashboard:farmer')
             else:
-                products = Product.objects.all()
-                context = {
-                    "products": products,
-                }
-                return render(request, 'products/product_list.html', context= context)
+                return redirect('dashboard:buyer')
         else:
             messages.error(request, 'Invalid email or password')
             return render(request, 'accounts/login.html')
@@ -97,6 +92,7 @@ class LogoutView(View):
     View for user logout
     """
     def get(self, request):
+        """Handle GET requests for user logout"""
         logout(request)
         messages.success(request, 'Logout successful')
-        return redirect('login')
+        return redirect('accounts:login')

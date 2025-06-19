@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Your Shopping Cart - Farm2Market{% endblock %}
+
+{% block hero_height %}200px{% endblock %}
+
+{% block hero_content %}
+<h1 class="display-4 fw-bold mb-3">Your Shopping Cart</h1>
+<p class="lead mb-4">Review your items before checkout</p>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- Cart Items -->
+    <div class="col-lg-8">
+        <div class="card mb-4">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0">Cart Items ({{ cart.item_count }})</h4>
+            </div>
+            <div class="card-body">
+                {% if cart.items.all %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Price</th>
+                                    <th>Quantity</th>
+                                    <th>Total</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in cart.items.all %}
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            {% if item.product.image %}
+                                                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="img-thumbnail me-3" style="width: 60px; height: 60px; object-fit: cover;">
+                                            {% else %}
+                                                <div class="bg-light rounded me-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                                                    <i class="fas fa-seedling text-success"></i>
+                                                </div>
+                                            {% endif %}
+                                            <div>
+                                                <h6 class="mb-0">{{ item.product.name }}</h6>
+                                                <small class="text-muted">{{ item.product.category.name }}</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>${{ item.product.price }}</td>
+                                    <td>
+                                        <form method="post" action="{% url 'carts:update' item.product.id %}" class="d-flex align-items-center">
+                                            {% csrf_token %}
+                                            <input type="number" name="quantity" value="{{ item.quantity }}" min="1" max="{{ item.product.stock_quantity }}" class="form-control form-control-sm" style="width: 70px;">
+                                            <button type="submit" class="btn btn-sm btn-outline-success ms-2">
+                                                <i class="fas fa-sync-alt"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                    <td>${{ item.total_price }}</td>
+                                    <td>
+                                        <form method="post" action="{% url 'carts:remove' item.product.id %}">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                <i class="fas fa-trash-alt"></i> Remove
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-shopping-cart fa-4x text-muted mb-3"></i>
+                        <h5>Your cart is empty</h5>
+                        <p class="text-muted">Add some products to your cart to see them here.</p>
+                        <a href="{% url 'products:list' %}" class="btn btn-success mt-3">
+                            <i class="fas fa-shopping-basket me-2"></i>Browse Products
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Continue Shopping -->
+        <div class="d-flex justify-content-between">
+            <a href="{% url 'products:list' %}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Continue Shopping
+            </a>
+            
+            {% if cart.items.all %}
+            <form method="post" action="{% url 'carts:clear' %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-outline-danger">
+                    <i class="fas fa-trash me-2"></i>Clear Cart
+                </button>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Order Summary -->
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header bg-dark text-white">
+                <h4 class="mb-0">Order Summary</h4>
+            </div>
+            <div class="card-body">
+                <div class="d-flex justify-content-between mb-3">
+                    <span>Subtotal:</span>
+                    <span>${{ cart.total_price }}</span>
+                </div>
+                <div class="d-flex justify-content-between mb-3">
+                    <span>Shipping:</span>
+                    <span>$0.00</span>
+                </div>
+                <div class="d-flex justify-content-between mb-3">
+                    <span>Tax:</span>
+                    <span>$0.00</span>
+                </div>
+                <hr>
+                <div class="d-flex justify-content-between mb-3">
+                    <strong>Total:</strong>
+                    <strong>${{ cart.total_price }}</strong>
+                </div>
+                
+                {% if cart.items.all %}
+                <div class="d-grid gap-2">
+                    <a href="{% url 'carts:checkout' %}" class="btn btn-success">
+                        <i class="fas fa-credit-card me-2"></i>Proceed to Checkout
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
