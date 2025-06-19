@@ -34,4 +34,4 @@ def dashboard(request):
         "recent_orders": recent_orders,
     }
 
-    return render(request, 'dashboard/dashboard.html', context=context)
+    return render(request, 'dashboard/farmer_dashboard.html', context=context)
