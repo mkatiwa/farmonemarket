@@ -116,7 +116,7 @@ class OrderUpdateStatusView(LoginRequiredMixin, View):
 
         # Update status
         new_status = request.POST.get('order_status')
-        if new_status in dict(Order.Status.choices):
+        if new_status in [choice[0] for choice in Order.Status.choices]:
             old_status = order.order_status
             order.order_status = new_status
 

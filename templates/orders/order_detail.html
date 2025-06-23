@@ -187,11 +187,13 @@
                         <div class="row">
                             <div class="col-md-8">
                                 <select name="order_status" class="form-select">
-                                    {% for status_value, status_label in order.Status.choices %}
-                                        <option value="{{ status_value }}" {% if order.order_status == status_value %}selected{% endif %}>
-                                            {{ status_label }}
-                                        </option>
-                                    {% endfor %}
+                                    <option value="pending" {% if order.order_status == 'pending' %}selected{% endif %}>Pending</option>
+                                    <option value="paid" {% if order.order_status == 'paid' %}selected{% endif %}>Paid</option>
+                                    <option value="processing" {% if order.order_status == 'processing' %}selected{% endif %}>Processing</option>
+                                    <option value="shipped" {% if order.order_status == 'shipped' %}selected{% endif %}>Shipped</option>
+                                    <option value="delivered" {% if order.order_status == 'delivered' %}selected{% endif %}>Delivered</option>
+                                    <option value="cancelled" {% if order.order_status == 'cancelled' %}selected{% endif %}>Cancelled</option>
+                                    <option value="refunded" {% if order.order_status == 'refunded' %}selected{% endif %}>Refunded</option>
                                 </select>
                             </div>
                             <div class="col-md-4">

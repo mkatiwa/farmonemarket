@@ -3,106 +3,373 @@
 
 {% block title %}Products - Farm2Market{% endblock %}
 
-{% block hero %}
-<section class="hero-section outline-hero">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-lg-8">
-                <h1 class="display-5 outline-heading">Fresh Farm Products</h1>
-                <p class="lead outline-text">Discover our selection of fresh, locally-sourced produce</p>
-            </div>
-            <div class="col-lg-4">
-                <div class="search-box">
-                    <form class="d-flex">
-                        <input class="form-control outline-form-control me-2" type="search" placeholder="Search products..." aria-label="Search">
-                        <button class="btn btn-outline-primary outline-btn" type="submit">
-                            <i class="fas fa-search"></i>
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+{% block hero_content %}
+<h1 class="display-4 fw-bold mb-3">Fresh Farm Products</h1>
+<p class="lead mb-4">Discover our selection of fresh, locally-sourced produce</p>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.product-card {
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border: none;
+    border-radius: 20px;
+    overflow: hidden;
+    background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+    position: relative;
+}
+
+.product-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, rgba(45, 143, 71, 0.1), rgba(253, 126, 20, 0.1));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 1;
+}
+
+.product-card:hover::before {
+    opacity: 1;
+}
+
+.product-card:hover {
+    transform: translateY(-10px) scale(1.03);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+}
+
+.product-image {
+    height: 240px;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+.product-card:hover .product-image {
+    transform: scale(1.1);
+}
+
+.product-placeholder {
+    height: 240px;
+    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 50%, #90caf9 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.product-placeholder::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.3) 50%, transparent 70%);
+    animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.price-tag {
+    font-size: 1.5rem;
+    font-weight: 800;
+    background: linear-gradient(45deg, #28a745, #20c997);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.stock-badge {
+    font-size: 0.75rem;
+    padding: 0.4rem 0.8rem;
+    border-radius: 25px;
+    font-weight: 600;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.badge.bg-danger {
+    background: linear-gradient(45deg, #dc3545, #e74c3c) !important;
+}
+
+.badge.bg-warning {
+    background: linear-gradient(45deg, #ffc107, #f39c12) !important;
+    color: #fff !important;
+}
+
+.badge.bg-info {
+    background: linear-gradient(45deg, #17a2b8, #3498db) !important;
+}
+
+.btn-add-cart {
+    background: linear-gradient(45deg, #28a745, #20c997);
+    border: none;
+    border-radius: 30px;
+    font-weight: 700;
+    transition: all 0.4s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-add-cart::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    transition: left 0.6s;
+}
+
+.btn-add-cart:hover::before {
+    left: 100%;
+}
+
+.btn-add-cart:hover {
+    background: linear-gradient(45deg, #218838, #1ea085);
+    transform: scale(1.08) translateY(-2px);
+    box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
+}
+
+.filter-card {
+    background: linear-gradient(135deg, #ffffff 0%, #f1f8ff 50%, #e3f2fd 100%);
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.filter-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #28a745, #20c997, #fd7e14, #ffc107);
+}
+
+.category-badge {
+    background: linear-gradient(45deg, #6f42c1, #8e44ad);
+    color: white;
+    font-weight: 600;
+    border-radius: 20px;
+    padding: 0.3rem 0.8rem;
+    font-size: 0.7rem;
+}
+
+.farmer-info {
+    background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+    border-radius: 15px;
+    padding: 0.5rem;
+    margin: 0.5rem 0;
+}
+
+.btn-view {
+    background: linear-gradient(45deg, #0d6efd, #6f42c1);
+    border: none;
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.btn-view:hover {
+    background: linear-gradient(45deg, #0b5ed7, #5a32a3);
+    transform: scale(1.05);
+    color: white;
+}
+
+.btn-login {
+    background: linear-gradient(45deg, #fd7e14, #ffc107);
+    border: none;
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.btn-login:hover {
+    background: linear-gradient(45deg, #e8690b, #e0a800);
+    transform: scale(1.05);
+    color: white;
+}
+
+.no-products-card {
+    background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 50%, #fdcb6e 100%);
+    border: none;
+    border-radius: 25px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.fade-in-up {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive enhancements */
+@media (max-width: 768px) {
+    .product-card:hover {
+        transform: translateY(-5px) scale(1.02);
+    }
+    
+    .price-tag {
+        font-size: 1.3rem;
+    }
+    
+    .product-image,
+    .product-placeholder {
+        height: 200px;
+    }
+}
+
+@media (max-width: 576px) {
+    .product-image,
+    .product-placeholder {
+        height: 180px;
+    }
+    
+    .price-tag {
+        font-size: 1.2rem;
+    }
+}
+</style>
 {% endblock %}
 
 {% block content %}
 <!-- Filter Section -->
-<div class="row mb-4">
+<div class="row mb-5">
     <div class="col-12">
-        <div class="card outline-card">
-            <div class="card-body">
-                <h5 class="outline-heading mb-3">Filter Products</h5>
-                <div class="row">
-                    <div class="col-md-3">
-                        <select class="form-select outline-form-control">
-                            <option selected>All Categories</option>
-                            <option value="vegetables">Vegetables</option>
-                            <option value="fruits">Fruits</option>
-                            <option value="grains">Grains</option>
-                            <option value="dairy">Dairy</option>
-                            <option value="poultry">poultry</option>
+        <div class="card filter-card">
+            <div class="card-body p-4">
+                <h5 class="mb-4"><i class="fas fa-filter me-2"></i>Filter Products</h5>
+                <form method="get" class="row g-3">
+                    <div class="col-lg-3 col-md-4">
+                        <select name="category" class="form-select">
+                            <option value="">All Categories</option>
+                            {% for category in categories %}
+                                <option value="{{ category.name }}" {% if selected_category == category.name %}selected{% endif %}>
+                                    {{ category.name }}
+                                </option>
+                            {% endfor %}
                         </select>
                     </div>
-                    <div class="col-md-3">
-                        <select class="form-select outline-form-control">
-                            <option selected>Price Range</option>
-                            <option value="0-10">$0 - $10</option>
-                            <option value="10-25">$10 - $25</option>
-                            <option value="25-50">$25 - $50</option>
-                            <option value="50+">$50+</option>
-                        </select>
+                    <div class="col-lg-6 col-md-5">
+                        <input type="text" name="search" class="form-control" placeholder="Search products..." value="{{ search_query }}">
                     </div>
-                    <div class="col-md-3">
-                        <select class="form-select outline-form-control">
-                            <option selected>Sort By</option>
-                            <option value="name">Name</option>
-                            <option value="price">Price</option>
-                            <option value="newest">Newest</option>
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <button class="btn btn-outline-primary outline-btn w-100">
-                            <i class="fas fa-filter me-2"></i>Apply Filters
+                    <div class="col-lg-3 col-md-3">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fas fa-search me-2"></i>Search
                         </button>
                     </div>
-                </div>
+                </form>
             </div>
         </div>
     </div>
 </div>
 
 <!-- Products Grid -->
- {% for product in products %}
-    <div class="container">
-        <div class="row">
-            <div class="col-md-6">
-    {% comment %} <div class="col-lg-4 col-md-6 mb-4"> {% endcomment %}
-        <div class="card product-card outline-hover">
-            <div class="product-image">
+<div class="row g-4">
+    {% for product in products %}
+    <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 fade-in-up" style="animation-delay: {{ forloop.counter0|floatformat:1 }}s;">
+        <div class="card product-card h-100">
+            <div class="position-relative overflow-hidden">
                 {% if product.image %}
-                    <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+                    <img src="{{ product.image.url }}" class="card-img-top product-image" alt="{{ product.name }}">
                 {% else %}
-                    <i class="fas fa-apple-alt fa-4x text-success opacity-50"></i>
+                    <div class="product-placeholder d-flex align-items-center justify-content-center">
+                        <i class="fas fa-apple-alt fa-4x text-white opacity-75"></i>
+                    </div>
                 {% endif %}
-            </div>
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-start mb-2">
-                    <h5 class="product-title">{{ product.name }}</h5>
-                    {% if product.is_organic %}
-                        <span class="badge bg-success">Organic</span>
+                
+                <!-- Status Badges -->
+                <div class="position-absolute top-0 end-0 m-3">
+                    {% if product.stock_quantity <= 0 %}
+                        <span class="badge bg-danger stock-badge">
+                            <i class="fas fa-times me-1"></i>Out of Stock
+                        </span>
+                    {% elif product.stock_quantity <= 5 %}
+                        <span class="badge bg-warning stock-badge">
+                            <i class="fas fa-exclamation me-1"></i>Low Stock
+                        </span>
+                    {% else %}
+                        <span class="badge bg-success stock-badge">
+                            <i class="fas fa-check me-1"></i>In Stock
+                        </span>
                     {% endif %}
                 </div>
-                <p class="card-text outline-text">{{ product.description|truncatewords:15 }}</p>
-                <div class="d-flex justify-content-between align-items-center">
-                    <span class="product-price">${{ product.price }}</span>
-                    <div class="btn-group" role="group">
-                        <button type="button" class="btn btn-sm btn-outline-primary outline-btn">
-                            <i class="fas fa-heart"></i>
-                        </button>
-                        <button type="button" class="btn btn-sm btn-outline-success outline-btn">
-                            <i class="fas fa-shopping-cart me-1"></i>Add to Cart
-                        </button>
+                
+                <!-- Category Badge -->
+                {% if product.category %}
+                <div class="position-absolute top-0 start-0 m-3">
+                    <span class="category-badge">
+                        <i class="fas fa-tag me-1"></i>{{ product.category.name }}
+                    </span>
+                </div>
+                {% endif %}
+            </div>
+            
+            <div class="card-body d-flex flex-column p-4 position-relative">
+                <h5 class="card-title mb-2 fw-bold text-dark">{{ product.name }}</h5>
+                <p class="card-text text-muted small flex-grow-1 mb-3">{{ product.description|truncatewords:12 }}</p>
+                
+                <!-- Price and Stock Info -->
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="price-tag">${{ product.price }}</span>
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-boxes me-1 text-info"></i>
+                        <small class="text-muted fw-bold">{{ product.stock_quantity }} left</small>
+                    </div>
+                </div>
+                
+                <!-- Farmer Info -->
+                <div class="farmer-info text-center mb-3">
+                    <small class="text-dark fw-bold">
+                        <i class="fas fa-user-tie me-1 text-success"></i>
+                        by {{ product.farmer.first_name }} {{ product.farmer.last_name }}
+                    </small>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="mt-auto">
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <a href="{% url 'products:detail' product.pk %}" class="btn btn-view btn-sm w-100">
+                                <i class="fas fa-eye me-1"></i>View
+                            </a>
+                        </div>
+                        <div class="col-6">
+                            {% if user.is_authenticated and user.is_buyer %}
+                                <form method="post" action="{% url 'carts:add' product.pk %}" class="w-100">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="quantity" value="1">
+                                    <button type="submit" class="btn btn-add-cart btn-sm w-100" 
+                                            {% if product.stock_quantity <= 0 %}disabled{% endif %}>
+                                        <i class="fas fa-shopping-cart me-1"></i>
+                                        {% if product.stock_quantity <= 0 %}Sold Out{% else %}Add{% endif %}
+                                    </button>
+                                </form>
+                            {% elif user.is_authenticated and user.is_farmer %}
+                                <button class="btn btn-secondary btn-sm w-100" disabled style="background: linear-gradient(45deg, #6c757d, #5a6268); border: none;">
+                                    <i class="fas fa-tractor me-1"></i>Farmer
+                                </button>
+                            {% else %}
+                                <a href="{% url 'accounts:login' %}" class="btn btn-login btn-sm w-100">
+                                    <i class="fas fa-sign-in-alt me-1"></i>Login
+                                </a>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -110,43 +377,63 @@
     </div>
     {% empty %}
     <div class="col-12">
-        <div class="card outline-card text-center">
+        <div class="card no-products-card text-center py-5">
             <div class="card-body">
-                <i class="fas fa-seedling fa-4x text-muted mb-3"></i>
-                <h5 class="outline-heading">No Products Found</h5>
-                <p class="outline-text">Check back soon for fresh products!</p>
+                <div class="mb-4">
+                    <i class="fas fa-seedling fa-5x text-success mb-3"></i>
+                    <div class="d-flex justify-content-center">
+                        <i class="fas fa-apple-alt fa-2x text-danger mx-2"></i>
+                        <i class="fas fa-carrot fa-2x text-warning mx-2"></i>
+                        <i class="fas fa-pepper-hot fa-2x text-success mx-2"></i>
+                    </div>
+                </div>
+                <h4 class="text-dark fw-bold">No Products Found</h4>
+                <p class="text-muted mb-4">Try adjusting your search criteria or check back soon for fresh products!</p>
+                <a href="{% url 'products:list' %}" class="btn btn-primary btn-lg">
+                    <i class="fas fa-refresh me-2"></i>View All Products
+                </a>
             </div>
         </div>
     </div>
     {% endfor %}
-
+</div>
 
 <!-- Pagination -->
-<div class="row mt-4">
+{% if products.has_other_pages %}
+<div class="row mt-5">
     <div class="col-12">
         <nav aria-label="Product pagination">
             <ul class="pagination justify-content-center">
-                <li class="page-item">
-                    <a class="page-link outline-link" href="#" aria-label="Previous">
-                        <span aria-hidden="true">&laquo;</span>
-                    </a>
-                </li>
-                <li class="page-item active">
-                    <a class="page-link bg-success border-success" href="#">1</a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link outline-link" href="#">2</a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link outline-link" href="#">3</a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link outline-link" href="#" aria-label="Next">
-                        <span aria-hidden="true">&raquo;</span>
-                    </a>
-                </li>
+                {% if products.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ products.previous_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                {% endif %}
+                
+                {% for num in products.paginator.page_range %}
+                    {% if products.number == num %}
+                        <li class="page-item active">
+                            <span class="page-link bg-success border-success">{{ num }}</span>
+                        </li>
+                    {% elif num > products.number|add:'-3' and num < products.number|add:'3' %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ num }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}">{{ num }}</a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+                
+                {% if products.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ products.next_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                {% endif %}
             </ul>
         </nav>
     </div>
 </div>
+{% endif %}
 {% endblock %}

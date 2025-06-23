@@ -28,6 +28,11 @@ class AddToCartView(LoginRequiredMixin, View):
     View for adding a product to the cart
     """
     def post(self, request, product_id):
+        # Check if user is a buyer
+        if not request.user.is_buyer:
+            messages.error(request, 'Only buyers can add products to cart.')
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER', reverse('products:list')))
+            
         product = get_object_or_404(Product, id=product_id)
 
         # Check if product is available
@@ -39,7 +44,10 @@ class AddToCartView(LoginRequiredMixin, View):
         cart, created = Cart.objects.get_or_create(user=request.user)
 
         # Get quantity from form
-        quantity = int(request.POST.get('quantity', 1))
+        try:
+            quantity = int(request.POST.get('quantity', 1))
+        except (ValueError, TypeError):
+            quantity = 1
 
         # Validate quantity
         if quantity <= 0:
@@ -59,13 +67,17 @@ class AddToCartView(LoginRequiredMixin, View):
 
         # If item already exists, update quantity
         if not created:
-            cart_item.quantity += quantity
-            if cart_item.quantity > product.stock_quantity:
+            new_quantity = cart_item.quantity + quantity
+            if new_quantity > product.stock_quantity:
                 cart_item.quantity = product.stock_quantity
                 messages.warning(request, f'Cart updated to maximum available quantity ({product.stock_quantity}).')
+            else:
+                cart_item.quantity = new_quantity
+                messages.success(request, f'Updated {product.name} quantity in cart.')
             cart_item.save()
-
-        messages.success(request, f'Added {quantity} x {product.name} to your cart.')
+        else:
+            messages.success(request, f'Added {quantity} x {product.name} to your cart.')
+            
         return redirect('carts:detail')
 
 

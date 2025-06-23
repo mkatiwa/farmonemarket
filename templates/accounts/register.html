@@ -2,79 +2,286 @@
 
 {% block title %}Register - Farm2Market{% endblock %}
 
-{% block hero_height %}200px{% endblock %}
+{% block hero_height %}300px{% endblock %}
 
 {% block hero_content %}
-<h1 class="display-4 fw-bold mb-3">Create Your Account</h1>
-<p class="lead mb-4">Join Farm2Market to buy or sell fresh produce</p>
+<h1 class="display-4 fw-bold mb-3">Join Farm2Market</h1>
+<p class="lead mb-4">Create your account to buy or sell fresh produce</p>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.register-card {
+    background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+    border: none;
+    border-radius: 25px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+.register-header {
+    background: var(--gradient-primary);
+    padding: 2rem;
+    text-align: center;
+}
+
+.form-control, .form-select {
+    border-radius: 15px;
+    border: 2px solid #e9ecef;
+    padding: 12px 20px;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--primary-green);
+    box-shadow: 0 0 15px rgba(45, 143, 71, 0.2);
+    transform: scale(1.01);
+}
+
+.btn-register {
+    background: var(--gradient-primary);
+    border: none;
+    border-radius: 25px;
+    padding: 15px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+}
+
+.btn-register:hover {
+    background: var(--gradient-secondary);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(45, 143, 71, 0.3);
+}
+
+.register-footer {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 1.5rem;
+    text-align: center;
+    border-top: 1px solid rgba(0,0,0,0.1);
+}
+
+.role-option {
+    padding: 1rem;
+    border: 2px solid #e9ecef;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.role-option:hover {
+    border-color: var(--primary-green);
+    background: rgba(45, 143, 71, 0.1);
+}
+
+.role-option.selected {
+    border-color: var(--primary-green);
+    background: var(--gradient-primary);
+    color: white;
+}
+
+.password-strength {
+    height: 5px;
+    border-radius: 3px;
+    margin-top: 5px;
+    transition: all 0.3s ease;
+}
+</style>
 {% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
-    <div class="col-md-8">
-        <div class="card">
-            <div class="card-header bg-success text-white">
-                <h4 class="mb-0">Register</h4>
+    <div class="col-md-8 col-lg-7">
+        <div class="card register-card">
+            <div class="register-header">
+                <i class="fas fa-user-plus fa-3x text-white mb-3"></i>
+                <h4 class="mb-0 text-white fw-bold">Create Your Account</h4>
             </div>
-            <div class="card-body">
-                <form method="post">
+            <div class="card-body p-4">
+                <form method="post" id="registerForm">
                     {% csrf_token %}
                     
-                    <div class="row mb-3">
+                    <div class="row mb-4">
                         <div class="col-md-6">
-                            <label for="first_name" class="form-label">First Name</label>
-                            <input type="text" class="form-control" id="first_name" name="first_name" required>
+                            <label for="first_name" class="form-label fw-bold">
+                                <i class="fas fa-user me-2 text-primary"></i>First Name
+                            </label>
+                            <input type="text" class="form-control" id="first_name" name="first_name" 
+                                   placeholder="Enter your first name" required>
                         </div>
                         <div class="col-md-6">
-                            <label for="last_name" class="form-label">Last Name</label>
-                            <input type="text" class="form-control" id="last_name" name="last_name" required>
-                        </div>
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Email</label>
-                        <input type="email" class="form-control" id="email" name="email" required>
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="role" class="form-label">I am a:</label>
-                        <select class="form-select" id="role" name="role" required>
-                            <option value="" selected disabled>Select your role</option>
-                            <option value="farmer">Farmer</option>
-                            <option value="buyer">Buyer</option>
-                        </select>
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="phone" class="form-label">Phone Number</label>
-                        <input type="tel" class="form-control" id="phone" name="phone">
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="address" class="form-label">Address</label>
-                        <textarea class="form-control" id="address" name="address" rows="3"></textarea>
-                    </div>
-                    
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label for="password" class="form-label">Password</label>
-                            <input type="password" class="form-control" id="password" name="password" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="password2" class="form-label">Confirm Password</label>
-                            <input type="password" class="form-control" id="password2" name="password2" required>
+                            <label for="last_name" class="form-label fw-bold">
+                                <i class="fas fa-user me-2 text-primary"></i>Last Name
+                            </label>
+                            <input type="text" class="form-control" id="last_name" name="last_name" 
+                                   placeholder="Enter your last name" required>
                         </div>
                     </div>
                     
-                    <div class="d-grid gap-2">
-                        <button type="submit" class="btn btn-success">Register</button>
+                    <div class="mb-4">
+                        <label for="email" class="form-label fw-bold">
+                            <i class="fas fa-envelope me-2 text-primary"></i>Email Address
+                        </label>
+                        <input type="email" class="form-control" id="email" name="email" 
+                               placeholder="Enter your email" required>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">
+                            <i class="fas fa-users me-2 text-primary"></i>I am a:
+                        </label>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="role-option" onclick="selectRole('farmer')" id="farmer-option">
+                                    <i class="fas fa-tractor fa-2x mb-2 text-success"></i>
+                                    <h6 class="mb-1">Farmer</h6>
+                                    <small>Sell fresh produce</small>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="role-option" onclick="selectRole('buyer')" id="buyer-option">
+                                    <i class="fas fa-shopping-cart fa-2x mb-2 text-info"></i>
+                                    <h6 class="mb-1">Buyer</h6>
+                                    <small>Buy fresh produce</small>
+                                </div>
+                            </div>
+                        </div>
+                        <input type="hidden" id="role" name="role" required>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="phone" class="form-label fw-bold">
+                            <i class="fas fa-phone me-2 text-primary"></i>Phone Number
+                        </label>
+                        <input type="tel" class="form-control" id="phone" name="phone" 
+                               placeholder="Enter your phone number">
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="address" class="form-label fw-bold">
+                            <i class="fas fa-map-marker-alt me-2 text-primary"></i>Address
+                        </label>
+                        <textarea class="form-control" id="address" name="address" rows="3" 
+                                  placeholder="Enter your address"></textarea>
+                    </div>
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <label for="password" class="form-label fw-bold">
+                                <i class="fas fa-lock me-2 text-primary"></i>Password
+                            </label>
+                            <input type="password" class="form-control" id="password" name="password" 
+                                   placeholder="Create a password" required onkeyup="checkPasswordStrength()">
+                            <div class="password-strength" id="passwordStrength"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="password2" class="form-label fw-bold">
+                                <i class="fas fa-lock me-2 text-primary"></i>Confirm Password
+                            </label>
+                            <input type="password" class="form-control" id="password2" name="password2" 
+                                   placeholder="Confirm your password" required onkeyup="checkPasswordMatch()">
+                            <small id="passwordMatch" class="form-text"></small>
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2 mb-3">
+                        <button type="submit" class="btn btn-register text-white">
+                            <i class="fas fa-user-plus me-2"></i>Create Account
+                        </button>
                     </div>
                 </form>
             </div>
-            <div class="card-footer text-center">
-                Already have an account? <a href="{% url 'accounts:login' %}">Login here</a>
+            <div class="register-footer">
+                <p class="mb-0">
+                    Already have an account? 
+                    <a href="{% url 'accounts:login' %}" class="text-decoration-none fw-bold" 
+                       style="color: var(--primary-green);">
+                        <i class="fas fa-sign-in-alt me-1"></i>Login here
+                    </a>
+                </p>
             </div>
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function selectRole(role) {
+    // Remove selected class from all options
+    document.querySelectorAll('.role-option').forEach(option => {
+        option.classList.remove('selected');
+    });
+    
+    // Add selected class to clicked option
+    document.getElementById(role + '-option').classList.add('selected');
+    
+    // Set hidden input value
+    document.getElementById('role').value = role;
+}
+
+function checkPasswordStrength() {
+    const password = document.getElementById('password').value;
+    const strengthBar = document.getElementById('passwordStrength');
+    
+    let strength = 0;
+    if (password.length >= 8) strength++;
+    if (/[A-Z]/.test(password)) strength++;
+    if (/[a-z]/.test(password)) strength++;
+    if (/[0-9]/.test(password)) strength++;
+    if (/[^A-Za-z0-9]/.test(password)) strength++;
+    
+    const colors = ['#dc3545', '#fd7e14', '#ffc107', '#20c997', '#28a745'];
+    const widths = ['20%', '40%', '60%', '80%', '100%'];
+    
+    if (password.length > 0) {
+        strengthBar.style.backgroundColor = colors[strength - 1] || colors[0];
+        strengthBar.style.width = widths[strength - 1] || widths[0];
+    } else {
+        strengthBar.style.width = '0%';
+    }
+}
+
+function checkPasswordMatch() {
+    const password = document.getElementById('password').value;
+    const password2 = document.getElementById('password2').value;
+    const matchText = document.getElementById('passwordMatch');
+    
+    if (password2.length > 0) {
+        if (password === password2) {
+            matchText.textContent = '✓ Passwords match';
+            matchText.style.color = '#28a745';
+        } else {
+            matchText.textContent = '✗ Passwords do not match';
+            matchText.style.color = '#dc3545';
+        }
+    } else {
+        matchText.textContent = '';
+    }
+}
+
+// Form validation
+document.getElementById('registerForm').addEventListener('submit', function(e) {
+    const requiredFields = ['first_name', 'last_name', 'email', 'role', 'password', 'password2'];
+    const password = document.getElementById('password').value;
+    const password2 = document.getElementById('password2').value;
+    
+    // Check required fields
+    for (let field of requiredFields) {
+        if (!document.getElementById(field).value.trim()) {
+            e.preventDefault();
+            alert('Please fill in all required fields.');
+            return false;
+        }
+    }
+    
+    // Check password match
+    if (password !== password2) {
+        e.preventDefault();
+        alert('Passwords do not match.');
+        return false;
+    }
+});
+</script>
 {% endblock %}

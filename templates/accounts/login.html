@@ -1,44 +1,159 @@
-{% extends 'products/../base.html' %}
+{% extends 'base.html' %}
 
 {% block title %}Login - Farm2Market{% endblock %}
 
-{% block hero_height %}200px{% endblock %}
+{% block hero_height %}300px{% endblock %}
 
 {% block hero_content %}
 <h1 class="display-4 fw-bold mb-3">Welcome Back</h1>
 <p class="lead mb-4">Login to your Farm2Market account</p>
 {% endblock %}
 
+{% block extra_css %}
+<style>
+.login-card {
+    background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+    border: none;
+    border-radius: 25px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+.login-header {
+    background: var(--gradient-primary);
+    padding: 2rem;
+    text-align: center;
+}
+
+.form-control {
+    border-radius: 15px;
+    border: 2px solid #e9ecef;
+    padding: 12px 20px;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: var(--primary-green);
+    box-shadow: 0 0 15px rgba(45, 143, 71, 0.2);
+    transform: scale(1.02);
+}
+
+.btn-login {
+    background: var(--gradient-primary);
+    border: none;
+    border-radius: 25px;
+    padding: 15px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+}
+
+.btn-login:hover {
+    background: var(--gradient-secondary);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(45, 143, 71, 0.3);
+}
+
+.login-footer {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 1.5rem;
+    text-align: center;
+    border-top: 1px solid rgba(0,0,0,0.1);
+}
+
+.input-group-text {
+    background: var(--gradient-primary);
+    border: none;
+    color: white;
+    border-radius: 15px 0 0 15px;
+}
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="row justify-content-center">
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-header bg-success text-white">
-                <h4 class="mb-0">Login</h4>
+    <div class="col-md-6 col-lg-5">
+        <div class="card login-card">
+            <div class="login-header">
+                <i class="fas fa-sign-in-alt fa-3x text-white mb-3"></i>
+                <h4 class="mb-0 text-white fw-bold">Login to Your Account</h4>
             </div>
-            <div class="card-body">
-                <form method="post">
+            <div class="card-body p-4">
+                <form method="post" id="loginForm" action="{% url 'accounts:login' %}">
                     {% csrf_token %}
                     
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Email</label>
-                        <input type="email" class="form-control" id="email" name="email" required>
+                    <div class="mb-4">
+                        <label for="email" class="form-label fw-bold">
+                            <i class="fas fa-envelope me-2 text-primary"></i>Email Address
+                        </label>
+                        <input type="email" class="form-control" id="email" name="email" 
+                               placeholder="Enter your email" required>
                     </div>
                     
-                    <div class="mb-3">
-                        <label for="password" class="form-label">Password</label>
-                        <input type="password" class="form-control" id="password" name="password" required>
+                    <div class="mb-4">
+                        <label for="password" class="form-label fw-bold">
+                            <i class="fas fa-lock me-2 text-primary"></i>Password
+                        </label>
+                        <div class="position-relative">
+                            <input type="password" class="form-control" id="password" name="password" 
+                                   placeholder="Enter your password" required>
+                            <button type="button" class="btn btn-link position-absolute end-0 top-50 translate-middle-y" 
+                                    onclick="togglePassword()" style="border: none; background: none;">
+                                <i class="fas fa-eye" id="toggleIcon"></i>
+                            </button>
+                        </div>
                     </div>
                     
-                    <div class="d-grid gap-2">
-                        <button type="submit" class="btn btn-success">Login</button>
+                    <div class="d-grid gap-2 mb-3">
+                        <button type="submit" class="btn btn-login text-white">
+                            <i class="fas fa-sign-in-alt me-2"></i>Login
+                        </button>
                     </div>
                 </form>
             </div>
-            <div class="card-footer text-center">
-                Don't have an account? <a href="{% url 'accounts:register' %}">Register here</a>
+            <div class="login-footer">
+                <p class="mb-0">
+                    Don't have an account? 
+                    <a href="{% url 'accounts:register' %}" class="text-decoration-none fw-bold" 
+                       style="color: var(--primary-green);">
+                        <i class="fas fa-user-plus me-1"></i>Register here
+                    </a>
+                </p>
             </div>
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function togglePassword() {
+    const passwordField = document.getElementById('password');
+    const toggleIcon = document.getElementById('toggleIcon');
+    
+    if (passwordField.type === 'password') {
+        passwordField.type = 'text';
+        toggleIcon.classList.remove('fa-eye');
+        toggleIcon.classList.add('fa-eye-slash');
+    } else {
+        passwordField.type = 'password';
+        toggleIcon.classList.remove('fa-eye-slash');
+        toggleIcon.classList.add('fa-eye');
+    }
+}
+
+// Form validation
+document.getElementById('loginForm').addEventListener('submit', function(e) {
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    console.log(password)
+    console.log(email)
+    if (!email || !password) {
+        console.log("hey fix needed________________________________________")
+        e.preventDefault();
+        alert('Please fill in all fields.');
+        return false;
+    }
+});
+</script>
 {% endblock %}

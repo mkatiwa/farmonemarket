@@ -1,0 +1,173 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Page Not Found - Farm2Market{% endblock %}
+
+{% block hero_height %}400px{% endblock %}
+
+{% block hero_content %}
+<h1 class="display-4 fw-bold mb-3">Oops! Page Not Found</h1>
+<p class="lead mb-4">The page you're looking for seems to have wandered off to the farm</p>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.error-card {
+    background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+    border: none;
+    border-radius: 25px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+    overflow: hidden;
+    position: relative;
+}
+
+.error-number {
+    font-size: 8rem;
+    font-weight: 900;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+    margin-bottom: 1rem;
+}
+
+.error-icon {
+    font-size: 4rem;
+    color: var(--accent-orange);
+    margin-bottom: 2rem;
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-20px);
+    }
+    60% {
+        transform: translateY(-10px);
+    }
+}
+
+.suggestion-card {
+    background: rgba(45, 143, 71, 0.1);
+    border-left: 4px solid var(--primary-green);
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+    transition: all 0.3s ease;
+}
+
+.suggestion-card:hover {
+    background: rgba(45, 143, 71, 0.15);
+    transform: translateX(10px);
+}
+
+.btn-home {
+    background: var(--gradient-primary);
+    border: none;
+    border-radius: 30px;
+    padding: 15px 30px;
+    font-weight: 700;
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.btn-home:hover {
+    background: var(--gradient-secondary);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(45, 143, 71, 0.3);
+    color: white;
+}
+
+.floating-vegetables {
+    position: absolute;
+    opacity: 0.1;
+    animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+}
+
+.vegetable-1 { top: 10%; left: 10%; animation-delay: 0s; }
+.vegetable-2 { top: 20%; right: 15%; animation-delay: 2s; }
+.vegetable-3 { bottom: 30%; left: 20%; animation-delay: 4s; }
+.vegetable-4 { bottom: 10%; right: 10%; animation-delay: 1s; }
+
+@media (max-width: 768px) {
+    .error-number {
+        font-size: 5rem;
+    }
+    
+    .error-icon {
+        font-size: 3rem;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8 col-md-10">
+        <div class="card error-card text-center p-5 position-relative">
+            <!-- Floating Vegetables -->
+            <i class="fas fa-carrot floating-vegetables vegetable-1 fa-3x"></i>
+            <i class="fas fa-apple-alt floating-vegetables vegetable-2 fa-2x"></i>
+            <i class="fas fa-pepper-hot floating-vegetables vegetable-3 fa-3x"></i>
+            <i class="fas fa-leaf floating-vegetables vegetable-4 fa-2x"></i>
+            
+            <div class="error-icon">
+                <i class="fas fa-search"></i>
+            </div>
+            
+            <div class="error-number">404</div>
+            
+            <h2 class="mb-4 fw-bold text-dark">Page Not Found</h2>
+            
+            <p class="lead text-muted mb-4">
+                Sorry, the page you are looking for doesn't exist or has been moved. 
+                Don't worry, our fresh produce is still here!
+            </p>
+            
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <div class="suggestion-card">
+                        <h6 class="fw-bold text-success">
+                            <i class="fas fa-home me-2"></i>Go Home
+                        </h6>
+                        <p class="mb-0 small text-muted">Return to our homepage and explore fresh products</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="suggestion-card">
+                        <h6 class="fw-bold text-info">
+                            <i class="fas fa-apple-alt me-2"></i>Browse Products
+                        </h6>
+                        <p class="mb-0 small text-muted">Check out our fresh farm products</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-5">
+                <a href="{% url 'home' %}" class="btn btn-home btn-lg me-3">
+                    <i class="fas fa-home me-2"></i>Back to Home
+                </a>
+                <a href="{% url 'products:list' %}" class="btn btn-outline-success btn-lg">
+                    <i class="fas fa-shopping-basket me-2"></i>Browse Products
+                </a>
+            </div>
+            
+            <div class="mt-4">
+                <p class="text-muted small">
+                    <i class="fas fa-question-circle me-1"></i>
+                    Need help? <a href="#" class="text-decoration-none">Contact our support team</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
