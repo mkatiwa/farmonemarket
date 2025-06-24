@@ -27,6 +27,10 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-=*#&fqyyw2ohzs
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DJANGO_DEBUG', 'True') == 'True'
 
+# Custom error pages
+if not DEBUG:
+    ALLOWED_HOSTS = ['*']  # Configure properly for production
+
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 
 
@@ -77,6 +81,13 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'Farm2Market.wsgi.application'
 AUTH_USER_MODEL = 'accounts.User'
+
+# Authentication backends
+AUTHENTICATION_BACKENDS = [
+    'accounts.backends.EmailBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
+
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 

@@ -9,41 +9,574 @@
 
     <!-- Bootstrap CSS or your CSS framework -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-<style>
+
+    <style>
         /* Hero/Background Image Section */
         .hero-section {
+            background-image: url('{% block hero_image %}{% static "images/cover image.jpg" %}{% endblock %}');   background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-            min-height: {% block hero_height %}400px{% endblock %};
+            background-attachment: fixed;
+            min-height: {% block hero_height %}500px{% endblock %};
             position: relative;
             display: flex;
             align-items: center;
             justify-content: center;
+            overflow: hidden;
         }
 
-        /* Overlay for better text readability */
         .hero-overlay {
-            background: rgba(0, 0, 0, 0.5);
+            background: {% block hero_overlay %}linear-gradient(135deg, rgba(45, 143, 71, 0.7) 0%, rgba(32, 201, 151, 0.5) 50%, rgba(253, 126, 20, 0.6) 100%){% endblock %};
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
+            animation: gradientShift 8s ease-in-out infinite;
         }
 
-        /* Hero content */
+        @keyframes gradientShift {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 0.6; }
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 0.6; }
+        }
+
         .hero-content {
             position: relative;
             z-index: 2;
             text-align: center;
             color: white;
+            animation: fadeInUp 1s ease-out;
         }
 
-        /* Search box styling */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Enhanced Search Section with Background */
         .search-section {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 2rem 0;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            background-image: {% block search_bg %}linear-gradient(rgba(45, 143, 71, 0.9), rgba(32, 201, 151, 0.8)){% endblock %};
+            padding: 3rem 0;
+            box-shadow: var(--shadow-medium);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .search-section.with-image {
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        .search-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -50%;
+            width: 200%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .search-box {
+            position: relative;
+            z-index: 2;
+        }
+
+        .search-box .form-control {
+            border-radius: 50px;
+            border: 3px solid rgba(255,255,255,0.3);
+            background: rgba(255,255,255,0.95);
+            padding: 15px 25px;
+            font-size: 1.1rem;
+            box-shadow: var(--shadow-light);
+            transition: all 0.3s ease;
+        }
+
+        .search-box .form-control:focus {
+            border-color: var(--accent-orange);
+            box-shadow: 0 0 20px rgba(253, 126, 20, 0.3);
+            transform: scale(1.02);
+        }
+
+        .search-box .btn {
+            border-radius: 50px;
+            padding: 15px 30px;
+            background: var(--gradient-secondary);
+            border: none;
+            color: white;
+            font-weight: 600;
+            box-shadow: var(--shadow-light);
+            transition: all 0.3s ease;
+        }
+
+        .search-box .btn:hover {
+            transform: scale(1.05) translateY(-2px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        /* Vibrant Navbar */
+        .navbar {
+            background: var(--gradient-primary) !important;
+            box-shadow: var(--shadow-medium);
+            padding: 1rem 0;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 1000;
+            overflow: visible;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: white !important;
+        }
+
+        .nav-link {
+            color: rgba(255,255,255,0.9) !important;
+            font-weight: 500;
+            padding: 0.8rem 1.2rem !important;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-link:hover {
+            color: white !important;
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+        }
+
+        .nav-link.active {
+            background: var(--accent-orange);
+            color: white !important;
+        }
+
+        /* Fix dropdown menu positioning */
+        .dropdown-menu {
+            z-index: 1060 !important;
+            border: none;
+            box-shadow: var(--shadow-medium);
+            border-radius: 15px;
+            background: white;
+            margin-top: 0.5rem;
+            position: absolute !important;
+            top: 100% !important;
+            left: 0 !important;
+            transform: none !important;
+        }
+
+        .navbar .dropdown {
+            position: static;
+        }
+
+        .navbar-nav .dropdown-menu {
+            position: absolute;
+        }
+
+        .dropdown-item {
+            padding: 0.75rem 1.5rem;
+            transition: all 0.3s ease;
+            border-radius: 10px;
+            margin: 0.25rem 0.5rem;
+        }
+
+        .dropdown-item:hover {
+            background: var(--gradient-primary);
+            color: white;
+            transform: translateX(5px);
+        }
+
+        /* Enhanced Cards with Background Images */
+        .card {
+            border-radius: 20px;
+            border: none;
+            box-shadow: var(--shadow-light);
+            transition: all 0.4s ease;
+            overflow: hidden;
+            background: linear-gradient(145deg, rgba(255,255,255,0.9) 0%, rgba(248,249,250,0.8) 100%);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.3);
+            position: relative;
+        }
+
+        .card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: var(--shadow-heavy);
+        }
+
+        .card-with-bg {
+            background-size: cover;
+            background-position: center;
+            color: white;
+        }
+
+        .card-with-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(0,0,0,0.4), rgba(0,0,0,0.2));
+            z-index: 1;
+        }
+
+        .card-with-bg .card-body {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Colorful Buttons */
+        .btn {
+            border-radius: 30px;
+            font-weight: 600;
+            padding: 12px 25px;
+            transition: all 0.3s ease;
+            border: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: var(--gradient-accent);
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--gradient-primary);
+            color: white;
+        }
+
+        .btn-warning {
+            background: var(--gradient-secondary);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        /* Colorful Alerts */
+        .alert {
+            border-radius: 15px;
+            border: none;
+            font-weight: 500;
+            box-shadow: var(--shadow-light);
+        }
+
+        .alert-success {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            color: #155724;
+        }
+
+        .alert-danger {
+            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+            color: #721c24;
+        }
+
+        .alert-warning {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+            color: #856404;
+        }
+
+        /* Enhanced Footer */
+        footer {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d3436 50%, #343a40 100%) !important;
+            color: white;
+            box-shadow: 0 -10px 30px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-green), var(--secondary-green), var(--accent-orange), var(--accent-yellow));
+        }
+
+        .footer-section {
+            padding: 3rem 0 1rem;
+        }
+
+        .footer-brand {
+            font-size: 2rem;
+            font-weight: 800;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+        }
+
+        .footer-description {
+            color: #b8bcc8;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        .footer-title {
+            color: white;
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .footer-title::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background: var(--gradient-secondary);
+            border-radius: 2px;
+        }
+
+        .footer-link {
+            color: #b8bcc8 !important;
+            text-decoration: none;
+            padding: 0.5rem 0;
+            display: block;
+            transition: all 0.3s ease;
+            border-radius: 8px;
+            padding-left: 0;
+        }
+
+        .footer-link:hover {
+            color: var(--secondary-green) !important;
+            transform: translateX(10px);
+            padding-left: 15px;
+        }
+
+        .footer-link i {
+            width: 20px;
+            margin-right: 10px;
+            color: var(--accent-orange);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .social-link {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .social-link.facebook {
+            background: linear-gradient(45deg, #3b5998, #4267B2);
+        }
+
+        .social-link.twitter {
+            background: linear-gradient(45deg, #1da1f2, #0d8bd9);
+        }
+
+        .social-link.instagram {
+            background: linear-gradient(45deg, #e1306c, #fd1d1d, #fcb045);
+        }
+
+        .social-link.linkedin {
+            background: linear-gradient(45deg, #0077b5, #00a0dc);
+        }
+
+        .social-link:hover {
+            transform: translateY(-5px) scale(1.1);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+
+        .social-link i {
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .footer-bottom {
+            background: rgba(0,0,0,0.3);
+            padding: 1.5rem 0;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            margin-top: 2rem;
+        }
+
+        .footer-stats {
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--secondary-green);
+            display: block;
+        }
+
+        .stat-label {
+            color: #b8bcc8;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .newsletter-form {
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .newsletter-input {
+            background: rgba(255,255,255,0.1);
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 25px;
+            color: white;
+            padding: 12px 20px;
+        }
+
+        .newsletter-input:focus {
+            background: rgba(255,255,255,0.15);
+            border-color: var(--secondary-green);
+            color: white;
+            box-shadow: 0 0 15px rgba(32, 201, 151, 0.3);
+        }
+
+        .newsletter-input::placeholder {
+            color: rgba(255,255,255,0.6);
+        }
+
+        .newsletter-btn {
+            background: var(--gradient-secondary);
+            border: none;
+            border-radius: 25px;
+            padding: 12px 25px;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .footer-section {
+                padding: 2rem 0 1rem;
+            }
+            
+            .social-links {
+                justify-content: center;
+            }
+            
+            .footer-brand {
+                text-align: center;
+                font-size: 1.5rem;
+            }
+            
+            .footer-description {
+                text-align: center;
+            }
+        }
+
+        /* Responsive Enhancements */
+        @media (max-width: 768px) {
+            .hero-section {
+                min-height: 350px;
+                background-attachment: scroll;
+            }
+            
+            .search-section {
+                padding: 2rem 0;
+            }
+            
+            .search-box .form-control,
+            .search-box .btn {
+                padding: 12px 20px;
+                font-size: 1rem;
+            }
+            
+            .navbar {
+                padding: 0.5rem 0;
+            }
+            
+            .nav-link {
+                padding: 0.6rem 1rem !important;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .hero-content h1 {
+                font-size: 2rem !important;
+            }
+            
+            .hero-content p {
+                font-size: 1rem !important;
+            }
+            
+            .search-box .d-flex {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+
+        /* Removed loading animation */
+
+        /* Scroll animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
     </style>
 
@@ -51,72 +584,99 @@
 </head>
 <body>
     <!-- Navigation Bar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-success">
+    <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
-{#            <a class="navbar-brand" href="{% url 'home' %}">Farm2Market</a>#}
+            <a class="navbar-brand d-flex align-items-center" href="{% url 'home' %}">
+                <i class="fas fa-seedling me-2 text-warning"></i>
+                <span class="fw-bold">Farm2Market</span>
+            </a>
 
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
-
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'home' %}">
+                            <i class="fas fa-home me-1"></i>Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'products:list' %}">
+                            <i class="fas fa-apple-alt me-1"></i>Products
+                        </a>
+                    </li>
                 </ul>
 
                 <ul class="navbar-nav">
                     {% if user.is_authenticated %}
-
+                        <!-- Cart with Badge -->
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'home' %}">Home</a>
-                        </li>
-
-                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'products:list' %}">Products</a>
-                        </li>
-                        <!-- Cart -->
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'carts:detail' %}">
-                                <i class="fas fa-shopping-cart"></i> Cart
+                            <a class="nav-link position-relative" href="{% url 'carts:detail' %}">
+                                <i class="fas fa-shopping-cart me-1"></i>Cart
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning text-dark">
+                                    0
+                                    <span class="visually-hidden">items in cart</span>
+                                </span>
                             </a>
                         </li>
 
                         <!-- Orders -->
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'orders:list' %}">My Orders</a>
+                            <a class="nav-link" href="{% url 'orders:list' %}">
+                                <i class="fas fa-box me-1"></i>Orders
+                            </a>
                         </li>
 
                         <!-- Account/Dashboard -->
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
-                                <i class="fas fa-user"></i> {{ user.username }}
+                            <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                                <div class="rounded-circle bg-warning text-dark d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px;">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                {{ user.first_name|default:user.username }}
                             </a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="{% url 'profiles:detail' %}">My Profile</a></li>
+                            <ul class="dropdown-menu dropdown-menu-end shadow border-0" style="border-radius: 15px;">
+                                <li><a class="dropdown-item" href="{% url 'profiles:detail' %}">
+                                    <i class="fas fa-user-circle me-2 text-primary"></i>My Profile
+                                </a></li>
 
                                 {% if user.is_staff %}
-                                    <li><a class="dropdown-item" href="{% url 'admin:index' %}">Admin Panel</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'admin:index' %}">
+                                        <i class="fas fa-cog me-2 text-secondary"></i>Admin Panel
+                                    </a></li>
                                 {% endif %}
 
                                 {% if user.is_farmer %}
-                                    <li><a class="dropdown-item" href="{% url 'dashboard:farmer' %}">Farmer Dashboard</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'dashboard:farmer' %}">
+                                        <i class="fas fa-tractor me-2 text-success"></i>Farmer Dashboard
+                                    </a></li>
                                 {% endif %}
 
                                 {% if user.is_buyer %}
-                                    <li><a class="dropdown-item" href="{% url 'dashboard:buyer' %}">Buyer Dashboard</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'dashboard:buyer' %}">
+                                        <i class="fas fa-shopping-bag me-2 text-info"></i>Buyer Dashboard
+                                    </a></li>
                                 {% endif %}
 
                                 <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="{% url 'accounts:logout' %}">Logout</a></li>
+                                <li><a class="dropdown-item text-danger" href="{% url 'accounts:logout' %}">
+                                    <i class="fas fa-sign-out-alt me-2"></i>Logout
+                                </a></li>
                             </ul>
                         </li>
                     {% else %}
                         <!-- Login/Register -->
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'accounts:login' %}">Login</a>
+                            <a class="nav-link" href="{% url 'accounts:login' %}">
+                                <i class="fas fa-sign-in-alt me-1"></i>Login
+                            </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'accounts:register' %}">Register</a>
+                            <a class="nav-link btn btn-outline-warning text-white ms-2" href="{% url 'accounts:register' %}">
+                                <i class="fas fa-user-plus me-1"></i>Register
+                            </a>
                         </li>
                     {% endif %}
                 </ul>
@@ -145,8 +705,8 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="search-box">
-                        <form class="d-flex">
-                            <input class="form-control outline-form-control me-2" type="search" placeholder="Search products..." aria-label="Search">
+                        <form class="d-flex" method="get" action="{% url 'products:list' %}">
+                            <input class="form-control outline-form-control me-2" type="search" name="search" placeholder="Search products..." aria-label="Search" value="{{ request.GET.search }}">
                             <button class="btn btn-outline-primary outline-btn" type="submit">
                                 <i class="fas fa-search"></i>
                             </button>
@@ -171,32 +731,157 @@
 
     <!-- Main Content -->
     <main class="container my-4">
-        {% block content %}
-        {% endblock %}
+        <div class="content-wrapper">
+            {% block content %}
+            {% endblock %}
+        </div>
     </main>
 
-    <!-- Footer -->
-    <footer class="bg-dark text-light mt-5 py-4">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-6">
-                    <h5>Farm2Market</h5>
-                    <p>Connecting farmers directly with buyers for fresh, quality produce.</p>
+    <!-- Enhanced Footer -->
+    <footer class="mt-5">
+        <div class="footer-section">
+            <div class="container">
+                <!-- Stats Section -->
+                <div class="footer-stats">
+                    <div class="row">
+                        <div class="col-md-3 col-6">
+                            <div class="stat-item">
+                                <span class="stat-number">500+</span>
+                                <span class="stat-label">Happy Farmers</span>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-6">
+                            <div class="stat-item">
+                                <span class="stat-number">1000+</span>
+                                <span class="stat-label">Fresh Products</span>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-6">
+                            <div class="stat-item">
+                                <span class="stat-number">2500+</span>
+                                <span class="stat-label">Satisfied Buyers</span>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-6">
+                            <div class="stat-item">
+                                <span class="stat-number">50+</span>
+                                <span class="stat-label">Cities Served</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-lg-6">
-                    <h5>Quick Links</h5>
-                    <ul class="list-unstyled">
-                        <li><a href=" #" class="text-light">Home</a></li>
-                        <li><a href="#" class="text-light">Products</a></li>
+
+                <!-- Main Footer Content -->
+                <div class="row">
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="footer-brand">
+                            <i class="fas fa-seedling me-2"></i>Farm2Market
+                        </div>
+                        <p class="footer-description">
+                            Connecting farmers directly with buyers for fresh, quality produce. 
+                            Building a sustainable future through direct farm-to-table relationships.
+                        </p>
+                        <div class="social-links">
+                            <a href="#" class="social-link facebook">
+                                <i class="fab fa-facebook-f"></i>
+                            </a>
+                            <a href="#" class="social-link twitter">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                            <a href="#" class="social-link instagram">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                            <a href="#" class="social-link linkedin">
+                                <i class="fab fa-linkedin-in"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-2 col-md-6 mb-4">
+                        <h6 class="footer-title">Quick Links</h6>
+                        <a href="{% url 'home' %}" class="footer-link">
+                            <i class="fas fa-home"></i>Home
+                        </a>
+                        <a href="{% url 'products:list' %}" class="footer-link">
+                            <i class="fas fa-apple-alt"></i>Products
+                        </a>
                         {% if user.is_authenticated %}
-                            <li><a href="#" class="text-light">Dashboard</a></li>
+                            <a href="{% url 'orders:list' %}" class="footer-link">
+                                <i class="fas fa-box"></i>My Orders
+                            </a>
+                            <a href="{% url 'carts:detail' %}" class="footer-link">
+                                <i class="fas fa-shopping-cart"></i>Cart
+                            </a>
+                        {% else %}
+                            <a href="{% url 'accounts:login' %}" class="footer-link">
+                                <i class="fas fa-sign-in-alt"></i>Login
+                            </a>
+                            <a href="{% url 'accounts:register' %}" class="footer-link">
+                                <i class="fas fa-user-plus"></i>Register
+                            </a>
                         {% endif %}
-                    </ul>
+                    </div>
+
+                    <div class="col-lg-2 col-md-6 mb-4">
+                        <h6 class="footer-title">Categories</h6>
+                        <a href="{% url 'products:list' %}?category=Vegetables" class="footer-link">
+                            <i class="fas fa-carrot"></i>Vegetables
+                        </a>
+                        <a href="{% url 'products:list' %}?category=Fruits" class="footer-link">
+                            <i class="fas fa-apple-alt"></i>Fruits
+                        </a>
+                        <a href="{% url 'products:list' %}?category=Grains" class="footer-link">
+                            <i class="fas fa-seedling"></i>Grains
+                        </a>
+                        <a href="{% url 'products:list' %}?category=Dairy" class="footer-link">
+                            <i class="fas fa-cheese"></i>Dairy
+                        </a>
+                        <a href="{% url 'products:list' %}?category=Herbs" class="footer-link">
+                            <i class="fas fa-leaf"></i>Herbs
+                        </a>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <h6 class="footer-title">Stay Connected</h6>
+                        <p class="footer-description mb-3">
+                            Subscribe to our newsletter for fresh updates, seasonal produce alerts, and exclusive farmer deals.
+                        </p>
+                        <div class="newsletter-form">
+                            <form class="d-flex flex-column gap-3">
+                                <input type="email" class="form-control newsletter-input" placeholder="Enter your email address" required>
+                                <button type="submit" class="btn newsletter-btn">
+                                    <i class="fas fa-paper-plane me-2"></i>Subscribe Now
+                                </button>
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <hr>
-            <div class="text-center">
-                <small>&copy; 2025 Farm2Market. All rights reserved.</small>
+        </div>
+
+        <!-- Footer Bottom -->
+        <div class="footer-bottom">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <p class="mb-0">
+                            <i class="fas fa-copyright me-1"></i>
+                            2025 Farm2Market. All rights reserved.
+                        </p>
+                    </div>
+                    <div class="col-md-6 text-md-end">
+                        <p class="mb-0">
+                            <span class="me-3">
+                                <i class="fas fa-heart text-danger me-1"></i>
+                                Made with love for farmers
+                            </span>
+                            <span>
+                                <i class="fas fa-leaf text-success me-1"></i>
+                                Sustainable & Fresh
+                            </span>
+                        </p>
+                    </div>
+                </div>
             </div>
         </div>
     </footer>
@@ -208,5 +893,118 @@
     <script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
 
     {% block extra_js %}{% endblock %}
+    
+    <!-- Enhanced JavaScript for Interactivity -->
+    <script>
+        // Smooth scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+        
+        // Observe all fade-in elements
+        document.querySelectorAll('.fade-in').forEach(el => {
+            observer.observe(el);
+        });
+        
+        // Direct form submission without loading animation
+        
+        // Navbar scroll effect
+        let lastScrollTop = 0;
+        const navbar = document.querySelector('.navbar');
+        
+        window.addEventListener('scroll', () => {
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            
+            if (scrollTop > lastScrollTop && scrollTop > 100) {
+                navbar.style.transform = 'translateY(-100%)';
+            } else {
+                navbar.style.transform = 'translateY(0)';
+            }
+            
+            // Add background blur when scrolled
+            if (scrollTop > 50) {
+                navbar.style.backdropFilter = 'blur(10px)';
+                navbar.style.background = 'rgba(45, 143, 71, 0.95)';
+            } else {
+                navbar.style.backdropFilter = 'none';
+                navbar.style.background = 'linear-gradient(135deg, #2d8f47 0%, #20c997 100%)';
+            }
+            
+            lastScrollTop = scrollTop;
+        });
+        
+        // Add ripple effect to buttons
+        document.querySelectorAll('.btn').forEach(button => {
+            button.addEventListener('click', function(e) {
+                const ripple = document.createElement('span');
+                const rect = this.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const x = e.clientX - rect.left - size / 2;
+                const y = e.clientY - rect.top - size / 2;
+                
+                ripple.style.width = ripple.style.height = size + 'px';
+                ripple.style.left = x + 'px';
+                ripple.style.top = y + 'px';
+                ripple.classList.add('ripple');
+                
+                this.appendChild(ripple);
+                
+                setTimeout(() => {
+                    ripple.remove();
+                }, 600);
+            });
+        });
+        
+        // Enhanced search functionality
+        const searchInput = document.querySelector('input[type="search"]');
+        if (searchInput) {
+            searchInput.addEventListener('focus', function() {
+                this.parentElement.style.transform = 'scale(1.02)';
+            });
+            
+            searchInput.addEventListener('blur', function() {
+                this.parentElement.style.transform = 'scale(1)';
+            });
+        }
+        
+        // Add CSS for ripple effect
+        const style = document.createElement('style');
+        style.textContent = `
+            .btn {
+                position: relative;
+                overflow: hidden;
+            }
+            
+            .ripple {
+                position: absolute;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.6);
+                transform: scale(0);
+                animation: ripple-animation 0.6s linear;
+                pointer-events: none;
+            }
+            
+            @keyframes ripple-animation {
+                to {
+                    transform: scale(4);
+                    opacity: 0;
+                }
+            }
+            
+            .navbar {
+                transition: all 0.3s ease;
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
 </body>
 </html>
