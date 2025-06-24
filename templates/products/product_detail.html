@@ -3,6 +3,8 @@
 
 {% block title %}{{ product.name }} - Farm2Market{% endblock %}
 
+{% block hero_image %}url('{% static "images/WhatsApp Image 2025-06-19 at 2.17.50 PM.jpeg" %}'){% endblock %}
+{% block hero_overlay %}linear-gradient(135deg, rgba(32, 201, 151, 0.8) 0%, rgba(45, 143, 71, 0.6) 100%){% endblock %}
 {% block hero_height %}300px{% endblock %}
 
 {% block hero_content %}
@@ -10,18 +12,91 @@
 <p class="lead mb-4">Fresh from {{ product.farmer.first_name }}'s farm</p>
 {% endblock %}
 
+{% block extra_css %}
+<style>
+.product-card {
+    border-radius: 20px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    border: none;
+    overflow: hidden;
+}
+.add-to-cart-btn {
+    background: linear-gradient(45deg, #28a745, #20c997);
+    border: none;
+    border-radius: 25px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+.add-to-cart-btn:hover {
+    background: linear-gradient(45deg, #218838, #1ea085);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
+}
+.price-tag {
+    font-size: 2rem;
+    font-weight: 800;
+    background: linear-gradient(45deg, #28a745, #20c997);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+.product-image {
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    position: relative;
+    cursor: zoom-in;
+}
+.product-image:hover {
+    transform: scale(1.02);
+    transition: transform 0.3s ease;
+}
+.farmer-card {
+    background: linear-gradient(145deg, #e8f5e8, #d4edda);
+    border-radius: 15px;
+    padding: 1.5rem;
+    border: 1px solid rgba(40, 167, 69, 0.2);
+}
+.stock-indicator {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    border-radius: 25px;
+    font-weight: 600;
+}
+.tabs-container {
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+.nav-tabs .nav-link {
+    border-radius: 0;
+    border: none;
+    background: #f8f9fa;
+    color: #6c757d;
+    font-weight: 600;
+}
+.nav-tabs .nav-link.active {
+    background: linear-gradient(45deg, #28a745, #20c997);
+    color: white;
+}
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="row">
     <!-- Product Image -->
     <div class="col-md-5 mb-4">
-        <div class="card">
-            <div class="card-body text-center">
+        <div class="product-card">
+            <div class="card-body text-center p-4">
                 {% if product.image %}
-                    <img src="{{ product.image.url }}" class="img-fluid rounded" alt="{{ product.name }}">
+                    <div class="product-image">
+                        <img src="{{ product.image.url }}" class="img-fluid" alt="{{ product.name }}" style="max-height: 400px; width: 100%; object-fit: cover;">
+                    </div>
                 {% else %}
-                    <div class="p-5 bg-light rounded">
+                    <div class="p-5 rounded product-image" style="background: linear-gradient(145deg, #e8f5e8, #d4edda);">
                         <i class="fas fa-seedling fa-5x text-success"></i>
-                        <p class="mt-3 text-muted">No image available</p>
+                        <p class="mt-3 text-muted fw-bold">No image available</p>
                     </div>
                 {% endif %}
             </div>
@@ -30,74 +105,142 @@
     
     <!-- Product Details -->
     <div class="col-md-7">
-        <div class="card mb-4">
-            <div class="card-header bg-success text-white">
+        <div class="product-card mb-4">
+            <div class="card-header text-white" style="background: linear-gradient(45deg, #28a745, #20c997);">
                 <div class="d-flex justify-content-between align-items-center">
                     <h3 class="mb-0">{{ product.name }}</h3>
-                    <span class="badge bg-light text-dark">{{ product.category.name }}</span>
+                    <span class="badge bg-white text-primary fw-bold">{{ product.category.name }}</span>
                 </div>
             </div>
             <div class="card-body">
-                <div class="mb-3">
-                    <h4 class="text-success">${{ product.price }}</h4>
-                    <p class="text-muted">
+                <div class="mb-4">
+                    <div class="price-tag">${{ product.price }}</div>
+                    <div class="mb-3">
                         {% if product.stock_quantity > 10 %}
-                            <span class="text-success"><i class="fas fa-check-circle"></i> In Stock</span>
+                            <span class="stock-indicator bg-success text-white">
+                                <i class="fas fa-check-circle me-2"></i>In Stock ({{ product.stock_quantity }} available)
+                            </span>
                         {% elif product.stock_quantity > 0 %}
-                            <span class="text-warning"><i class="fas fa-exclamation-circle"></i> Low Stock ({{ product.stock_quantity }} left)</span>
+                            <span class="stock-indicator bg-warning text-white">
+                                <i class="fas fa-exclamation-circle me-2"></i>Low Stock ({{ product.stock_quantity }} left)
+                            </span>
                         {% else %}
-                            <span class="text-danger"><i class="fas fa-times-circle"></i> Out of Stock</span>
+                            <span class="stock-indicator bg-danger text-white">
+                                <i class="fas fa-times-circle me-2"></i>Out of Stock
+                            </span>
                         {% endif %}
-                    </p>
+                    </div>
                 </div>
                 
-                <h5>Description</h5>
-                <p>{{ product.description|linebreaks }}</p>
-                
-                <h5>Farmer</h5>
-                <p>
-                    <i class="fas fa-user-circle me-2"></i>
-                    {{ product.farmer.first_name }} {{ product.farmer.last_name }}
-                </p>
-                
-                {% if product.stock_quantity > 0 %}
-                    <form method="post" action="{% url 'carts:add' product.id %}">
-                        {% csrf_token %}
-                        <div class="row align-items-end">
-                            <div class="col-md-4 mb-3">
-                                <label for="quantity" class="form-label">Quantity</label>
-                                <input type="number" class="form-control" id="quantity" name="quantity" value="1" min="1" max="{{ product.stock_quantity }}">
-                            </div>
-                            <div class="col-md-8 mb-3">
-                                <button type="submit" class="btn btn-success w-100">
-                                    <i class="fas fa-shopping-cart me-2"></i>Add to Cart
-                                </button>
-                            </div>
+                <!-- Farmer Info Card -->
+                <div class="farmer-card mb-4">
+                    <div class="d-flex align-items-center">
+                        <div class="rounded-circle bg-success d-flex align-items-center justify-content-center me-3" style="width: 60px; height: 60px;">
+                            <i class="fas fa-user text-white fa-2x"></i>
                         </div>
-                    </form>
+                        <div>
+                            <h6 class="mb-1 text-success fw-bold">Farmer</h6>
+                            <h5 class="mb-0">{{ product.farmer.first_name }} {{ product.farmer.last_name }}</h5>
+                            <small class="text-muted">{{ product.farmer.address|default:"Local Farmer" }}</small>
+                        </div>
+                    </div>
+                </div>
+                
+                {% if user.is_authenticated and user.is_buyer %}
+                    {% if product.stock_quantity > 0 %}
+                        <form method="post" action="{% url 'carts:add' product.id %}" class="mb-4">
+                            {% csrf_token %}
+                            <div class="row align-items-end">
+                                <div class="col-md-4 mb-3">
+                                    <label for="quantity" class="form-label fw-bold">Quantity</label>
+                                    <input type="number" class="form-control" id="quantity" name="quantity" value="1" min="1" max="{{ product.stock_quantity }}" style="border-radius: 15px;">
+                                </div>
+                                <div class="col-md-8 mb-3">
+                                    <button type="submit" class="btn add-to-cart-btn text-white w-100">
+                                        <i class="fas fa-shopping-cart me-2"></i>Add to Cart
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    {% else %}
+                        <div class="alert alert-warning rounded-3">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            This product is currently out of stock. Please check back later.
+                        </div>
+                    {% endif %}
+                {% elif user.is_authenticated and user.is_farmer %}
+                    <div class="alert alert-info rounded-3">
+                        <i class="fas fa-info-circle me-2"></i>
+                        You are viewing this as a farmer. Only buyers can add items to cart.
+                    </div>
                 {% else %}
-                    <div class="alert alert-warning">
-                        <i class="fas fa-exclamation-triangle me-2"></i>
-                        This product is currently out of stock. Please check back later.
+                    <div class="alert alert-primary rounded-3">
+                        <i class="fas fa-sign-in-alt me-2"></i>
+                        Please <a href="{% url 'accounts:login' %}" class="alert-link">login</a> to add items to your cart.
                     </div>
                 {% endif %}
+
             </div>
         </div>
         
-        <!-- Additional Information -->
-        <div class="card">
-            <div class="card-header">
-                <h5 class="mb-0">Additional Information</h5>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        <p><strong>Added on:</strong> {{ product.created_at|date:"F j, Y" }}</p>
-                        <p><strong>Last updated:</strong> {{ product.updated_at|date:"F j, Y" }}</p>
+        <!-- Product Details Tabs -->
+        <div class="tabs-container">
+            <ul class="nav nav-tabs" id="productTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="description-tab" data-bs-toggle="tab" data-bs-target="#description" type="button" role="tab">
+                        <i class="fas fa-align-left me-2"></i>Description
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="details-tab" data-bs-toggle="tab" data-bs-target="#details" type="button" role="tab">
+                        <i class="fas fa-info-circle me-2"></i>Details
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="farmer-tab" data-bs-toggle="tab" data-bs-target="#farmer" type="button" role="tab">
+                        <i class="fas fa-user me-2"></i>Farmer Info
+                    </button>
+                </li>
+            </ul>
+            <div class="tab-content p-4 bg-white" id="productTabsContent">
+                <div class="tab-pane fade show active" id="description" role="tabpanel">
+                    <h5 class="text-primary mb-3">Product Description</h5>
+                    <p class="lead">{{ product.description|linebreaks }}</p>
+                </div>
+                <div class="tab-pane fade" id="details" role="tabpanel">
+                    <h5 class="text-primary mb-3">Product Details</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <ul class="list-unstyled">
+                                <li class="mb-2"><strong>Category:</strong> {{ product.category.name }}</li>
+                                <li class="mb-2"><strong>Price:</strong> ${{ product.price }}</li>
+                                <li class="mb-2"><strong>Stock:</strong> {{ product.stock_quantity }} units</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <ul class="list-unstyled">
+                                <li class="mb-2"><strong>Status:</strong> {{ product.get_status_display }}</li>
+                                <li class="mb-2"><strong>Added:</strong> {{ product.created_at|date:"F j, Y" }}</li>
+                                <li class="mb-2"><strong>Updated:</strong> {{ product.updated_at|date:"F j, Y" }}</li>
+                            </ul>
+                        </div>
                     </div>
-                    <div class="col-md-6">
-                        <p><strong>Status:</strong> {{ product.get_status_display }}</p>
-                        <p><strong>Category:</strong> {{ product.category.name }}</p>
+                </div>
+                <div class="tab-pane fade" id="farmer" role="tabpanel">
+                    <h5 class="text-primary mb-3">About the Farmer</h5>
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="rounded-circle bg-success d-flex align-items-center justify-content-center me-3" style="width: 80px; height: 80px;">
+                            <i class="fas fa-user text-white fa-3x"></i>
+                        </div>
+                        <div>
+                            <h4 class="mb-1">{{ product.farmer.first_name }} {{ product.farmer.last_name }}</h4>
+                            <p class="text-muted mb-1">{{ product.farmer.email }}</p>
+                            <p class="text-muted mb-0">{{ product.farmer.address|default:"Local Farmer" }}</p>
+                        </div>
+                    </div>
+                    <div class="alert alert-success">
+                        <i class="fas fa-leaf me-2"></i>
+                        This product is sourced directly from the farmer, ensuring freshness and quality.
                     </div>
                 </div>
             </div>
@@ -108,23 +251,33 @@
 <!-- Related Products -->
 <div class="row mt-5">
     <div class="col-12">
-        <h3 class="mb-4">Related Products</h3>
+        <div class="d-flex align-items-center mb-4">
+            <h3 class="mb-0 me-3">Related Products</h3>
+            <div class="flex-grow-1" style="height: 2px; background: linear-gradient(90deg, #28a745, transparent);"></div>
+        </div>
     </div>
     
     {% for related_product in related_products %}
     <div class="col-md-3 mb-4">
-        <div class="card h-100">
-            <div class="card-img-top text-center p-3">
+        <div class="card h-100 product-card" style="transition: all 0.3s ease;">
+            <div class="card-img-top text-center p-3" style="height: 200px; display: flex; align-items: center; justify-content: center;">
                 {% if related_product.image %}
-                    <img src="{{ related_product.image.url }}" class="img-fluid" style="height: 150px; object-fit: contain;" alt="{{ related_product.name }}">
+                    <img src="{{ related_product.image.url }}" class="img-fluid" style="max-height: 150px; object-fit: contain;" alt="{{ related_product.name }}">
                 {% else %}
-                    <i class="fas fa-seedling fa-4x text-success"></i>
+                    <div class="bg-light rounded p-4">
+                        <i class="fas fa-seedling fa-4x text-success"></i>
+                    </div>
                 {% endif %}
             </div>
-            <div class="card-body">
-                <h5 class="card-title">{{ related_product.name }}</h5>
-                <p class="card-text text-success fw-bold">${{ related_product.price }}</p>
-                <a href="{% url 'products:detail' related_product.id %}" class="btn btn-outline-success btn-sm">View Details</a>
+            <div class="card-body d-flex flex-column">
+                <h6 class="card-title">{{ related_product.name }}</h6>
+                <p class="card-text text-success fw-bold mb-2">${{ related_product.price }}</p>
+                <small class="text-muted mb-3">{{ related_product.category.name }}</small>
+                <div class="mt-auto">
+                    <a href="{% url 'products:detail' related_product.id %}" class="btn btn-outline-success btn-sm w-100">
+                        <i class="fas fa-eye me-1"></i>View Details
+                    </a>
+                </div>
             </div>
         </div>
     </div>
@@ -134,4 +287,60 @@
     </div>
     {% endfor %}
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Image zoom functionality
+document.querySelector('.product-image img')?.addEventListener('click', function() {
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.9); z-index: 9999; display: flex;
+        align-items: center; justify-content: center; cursor: zoom-out;
+    `;
+    
+    const img = document.createElement('img');
+    img.src = this.src;
+    img.style.cssText = 'max-width: 90%; max-height: 90%; border-radius: 10px;';
+    
+    modal.appendChild(img);
+    document.body.appendChild(modal);
+    
+    modal.addEventListener('click', () => modal.remove());
+});
+
+// Quantity input validation
+const quantityInput = document.getElementById('quantity');
+if (quantityInput) {
+    quantityInput.addEventListener('input', function() {
+        const max = parseInt(this.max);
+        const value = parseInt(this.value);
+        
+        if (value > max) {
+            this.value = max;
+            alert(`Maximum available quantity is ${max}`);
+        }
+        if (value < 1) {
+            this.value = 1;
+        }
+    });
+}
+
+// Add to cart with loading state
+const addToCartForm = document.querySelector('form[action*="carts/add"]');
+if (addToCartForm) {
+    addToCartForm.addEventListener('submit', function() {
+        const button = this.querySelector('button[type="submit"]');
+        const originalText = button.innerHTML;
+        button.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Adding...';
+        button.disabled = true;
+        
+        setTimeout(() => {
+            button.innerHTML = originalText;
+            button.disabled = false;
+        }, 2000);
+    });
+}
+</script>
 {% endblock %}

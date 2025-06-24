@@ -1,3 +1,4 @@
+from django.contrib.auth.forms import AuthenticationForm
 from django.shortcuts import render, redirect
 from django.views import View
 from django.contrib.auth import authenticate, login, logout
@@ -24,6 +25,10 @@ class RegisterView(View):
 
     def post(self, request):
         """Handle POST requests for user registration"""
+        print(f"DEBUG: Register POST request received")
+        print(f"DEBUG: Request method: {request.method}")
+        print(f"DEBUG: POST data keys: {list(request.POST.keys())}")
+        
         data = request.POST
         
         # Get and validate form data
@@ -93,8 +98,15 @@ class LoginView(View):
 
     def post(self, request):
         """Handle POST requests for user login"""
+        print(f"DEBUG: Login POST request received")
+        print(f"DEBUG: Request method: {request.method}")
+        print(f"DEBUG: POST data keys: {list(request.POST.keys())}")
+        
         email = request.POST.get('email', '').strip()
         password = request.POST.get('password', '')
+        
+        print(f"DEBUG: Email: {email}")
+        print(f"DEBUG: Password length: {len(password) if password else 0}")
 
         if not email or not password:
             messages.error(request, 'Please provide both email and password.')
@@ -152,3 +164,6 @@ class LogoutView(View):
             logout(request)
             messages.success(request, f'Goodbye {user_name}! You have been logged out successfully.')
         return redirect('home')
+
+# =======================================================================================================================
+

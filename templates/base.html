@@ -29,13 +29,31 @@
         }
 
         body {
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 50%, #f8f9fa 100%);
+            background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 25%, #fff3e0 50%, #e8f5e8 75%, #fce4ec 100%);
+            background-size: 400% 400%;
+            animation: bodyGradient 20s ease infinite;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
         }
 
-        /* Hero Section with Animated Gradient Overlay */
+        @keyframes bodyGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .content-wrapper {
+            background: linear-gradient(145deg, rgba(255,255,255,0.8) 0%, rgba(248,249,250,0.6) 100%);
+            backdrop-filter: blur(15px);
+            border-radius: 25px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        /* Hero Section with Mixed Images and Dynamic Colors */
         .hero-section {
-            background-image: url('{% block hero_image %}{% static "images/landing.jpeg" %}{% endblock %}');
+            background-image: {% block hero_image %}url('{% static "images/landing.jpeg" %}'){% endblock %};
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -49,13 +67,18 @@
         }
 
         .hero-overlay {
-            background: linear-gradient(135deg, rgba(45, 143, 71, 0.8) 0%, rgba(32, 201, 151, 0.6) 50%, rgba(253, 126, 20, 0.7) 100%);
+            background: {% block hero_overlay %}linear-gradient(135deg, rgba(45, 143, 71, 0.7) 0%, rgba(32, 201, 151, 0.5) 50%, rgba(253, 126, 20, 0.6) 100%){% endblock %};
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
             animation: gradientShift 8s ease-in-out infinite;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 0.6; }
         }
 
         @keyframes gradientShift {
@@ -82,13 +105,19 @@
             }
         }
 
-        /* Enhanced Search Section */
+        /* Enhanced Search Section with Background */
         .search-section {
-            background: var(--gradient-primary);
+            background-image: {% block search_bg %}linear-gradient(rgba(45, 143, 71, 0.9), rgba(32, 201, 151, 0.8)){% endblock %};
             padding: 3rem 0;
             box-shadow: var(--shadow-medium);
             position: relative;
             overflow: hidden;
+        }
+
+        .search-section.with-image {
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
         }
 
         .search-section::before {
@@ -150,6 +179,9 @@
             box-shadow: var(--shadow-medium);
             padding: 1rem 0;
             transition: all 0.3s ease;
+            position: relative;
+            z-index: 1000;
+            overflow: visible;
         }
 
         .navbar-brand {
@@ -180,12 +212,24 @@
 
         /* Fix dropdown menu positioning */
         .dropdown-menu {
-            z-index: 1050 !important;
+            z-index: 1060 !important;
             border: none;
             box-shadow: var(--shadow-medium);
             border-radius: 15px;
             background: white;
             margin-top: 0.5rem;
+            position: absolute !important;
+            top: 100% !important;
+            left: 0 !important;
+            transform: none !important;
+        }
+
+        .navbar .dropdown {
+            position: static;
+        }
+
+        .navbar-nav .dropdown-menu {
+            position: absolute;
         }
 
         .dropdown-item {
@@ -201,19 +245,44 @@
             transform: translateX(5px);
         }
 
-        /* Enhanced Cards */
+        /* Enhanced Cards with Background Images */
         .card {
             border-radius: 20px;
             border: none;
             box-shadow: var(--shadow-light);
             transition: all 0.4s ease;
             overflow: hidden;
-            background: white;
+            background: linear-gradient(145deg, rgba(255,255,255,0.9) 0%, rgba(248,249,250,0.8) 100%);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.3);
+            position: relative;
         }
 
         .card:hover {
             transform: translateY(-8px) scale(1.02);
             box-shadow: var(--shadow-heavy);
+        }
+
+        .card-with-bg {
+            background-size: cover;
+            background-position: center;
+            color: white;
+        }
+
+        .card-with-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(0,0,0,0.4), rgba(0,0,0,0.2));
+            z-index: 1;
+        }
+
+        .card-with-bg .card-body {
+            position: relative;
+            z-index: 2;
         }
 
         /* Colorful Buttons */
@@ -537,20 +606,7 @@
             }
         }
 
-        /* Loading Animation */
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255,255,255,.3);
-            border-radius: 50%;
-            border-top-color: #fff;
-            animation: spin 1s ease-in-out infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
+        /* Removed loading animation */
 
         /* Scroll animations */
         .fade-in {
@@ -716,8 +772,10 @@
 
     <!-- Main Content -->
     <main class="container my-4">
-        {% block content %}
-        {% endblock %}
+        <div class="content-wrapper">
+            {% block content %}
+            {% endblock %}
+        </div>
     </main>
 
     <!-- Enhanced Footer -->
@@ -898,22 +956,7 @@
             observer.observe(el);
         });
         
-        // Add loading animation to buttons
-        document.querySelectorAll('form button[type="submit"]').forEach(button => {
-            button.addEventListener('click', function() {
-                if (!this.disabled) {
-                    const originalText = this.innerHTML;
-                    this.innerHTML = '<span class="loading"></span> Processing...';
-                    this.disabled = true;
-                    
-                    // Re-enable after form submission
-                    setTimeout(() => {
-                        this.innerHTML = originalText;
-                        this.disabled = false;
-                    }, 2000);
-                }
-            });
-        });
+        // Direct form submission without loading animation
         
         // Navbar scroll effect
         let lastScrollTop = 0;

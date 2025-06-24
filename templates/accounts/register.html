@@ -91,6 +91,20 @@
 {% endblock %}
 
 {% block content %}
+<!-- Display Django messages -->
+{% if messages %}
+<div class="row justify-content-center mb-3">
+    <div class="col-md-8 col-lg-7">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
 <div class="row justify-content-center">
     <div class="col-md-8 col-lg-7">
         <div class="card register-card">

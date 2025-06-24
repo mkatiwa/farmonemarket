@@ -4,47 +4,84 @@
 
 {% block title %}Farmer Dashboard - Farm2Market{% endblock %}
 
+{% block hero_image %}url('{% static "images/WhatsApp Image 2025-06-19 at 2.18.41 PM.jpeg" %}'){% endblock %}
+{% block hero_overlay %}linear-gradient(135deg, rgba(45, 143, 71, 0.8) 0%, rgba(32, 201, 151, 0.6) 100%){% endblock %}
+{% block hero_height %}250px{% endblock %}
+
+{% block hero_content %}
+<h1 class="display-5 fw-bold mb-3">Farmer Dashboard</h1>
+<p class="lead mb-4">Manage your products and track your sales</p>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.sidebar-card {
+    background: linear-gradient(145deg, #2d8f47 0%, #20c997 100%);
+    border-radius: 20px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+.stat-card {
+    border-radius: 15px;
+    transition: transform 0.3s ease;
+    border: none;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+.stat-card:hover {
+    transform: translateY(-5px);
+}
+.stat-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="container-fluid">
     <div class="row">
         <!-- Sidebar -->
         <div class="col-md-3 col-lg-2 px-0">
-            <div class="bg-dark min-vh-100">
+            <div class="sidebar-card m-3 min-vh-100">
                 <div class="p-3">
-                    <h5 class="text-white">Farmer Panel</h5>
+                    <h5 class="text-white fw-bold"><i class="fas fa-tractor me-2"></i>Farmer Panel</h5>
                     <hr class="text-white">
                     <ul class="nav flex-column">
-                        <li class="nav-item">
-                            <a class="nav-link text-white active" href="{% url 'dashboard:farmer' %}">
+                        <li class="nav-item mb-2">
+                            <a class="nav-link text-white active bg-white bg-opacity-25 rounded" href="{% url 'dashboard:farmer' %}">
                                 <i class="fas fa-tachometer-alt me-2"></i>Dashboard
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-white" href="{% url 'dashboard:farmer_products' %}">
+                        <li class="nav-item mb-2">
+                            <a class="nav-link text-white hover-bg-white" href="{% url 'dashboard:farmer_products' %}">
                                 <i class="fas fa-seedling me-2"></i>My Products
                             </a>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item mb-2">
                             <a class="nav-link text-white" href="{% url 'products:add' %}">
                                 <i class="fas fa-plus me-2"></i>Add Product
                             </a>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item mb-2">
                             <a class="nav-link text-white" href="{% url 'dashboard:farmer_orders' %}">
                                 <i class="fas fa-shopping-bag me-2"></i>Orders
                             </a>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item mb-2">
                             <a class="nav-link text-white" href="{% url 'dashboard:farmer_analytics' %}">
                                 <i class="fas fa-chart-line me-2"></i>Analytics
                             </a>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item mb-2">
                             <a class="nav-link text-white" href="{% url 'dashboard:farmer_inventory' %}">
                                 <i class="fas fa-boxes me-2"></i>Inventory
                             </a>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item mb-2">
                             <a class="nav-link text-white" href="{% url 'profiles:detail' %}">
                                 <i class="fas fa-user me-2"></i>Profile
                             </a>
@@ -76,13 +113,15 @@
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
-                                        <div class="d-flex justify-content-between align-items-center p-3 bg-light rounded">
-                                            <div>
-                                                <h4 class="mb-0">{{ total_products }}</h4>
-                                                <p class="text-muted mb-0">Total Products</p>
-                                            </div>
-                                            <div class="rounded-circle bg-primary p-3 text-white">
-                                                <i class="fas fa-seedling"></i>
+                                        <div class="stat-card p-3 bg-gradient" style="background: linear-gradient(45deg, #667eea, #764ba2);">
+                                            <div class="d-flex justify-content-between align-items-center text-white">
+                                                <div>
+                                                    <h4 class="mb-0 fw-bold">{{ total_products }}</h4>
+                                                    <p class="mb-0 opacity-75">Total Products</p>
+                                                </div>
+                                                <div class="stat-icon bg-white bg-opacity-25">
+                                                    <i class="fas fa-seedling text-white"></i>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

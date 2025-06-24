@@ -1,42 +1,46 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}Buyer Dashboard - AgriConnect{% endblock %}
+{% block title %}Buyer Dashboard - Farm2Market{% endblock %}
 
-{% block sidebar %}
-<a class="nav-link active" href="{% url 'buyer_dashboard' %}">
-    <i class="fas fa-tachometer-alt me-2"></i>Dashboard
-</a>
-<a class="nav-link" href="{% url 'browse_products' %}">
-    <i class="fas fa-search me-2"></i>Browse Products
-</a>
-<a class="nav-link" href="{% url 'buyer_orders' %}">
-    <i class="fas fa-shopping-cart me-2"></i>My Orders
-</a>
-<a class="nav-link" href="{% url 'buyer_favorites' %}">
-    <i class="fas fa-heart me-2"></i>Favorites
-</a>
-<a class="nav-link" href="{% url 'buyer_suppliers' %}">
-    <i class="fas fa-users me-2"></i>My Suppliers
-</a>
-<a class="nav-link" href="{% url 'buyer_messages' %}">
-    <i class="fas fa-envelope me-2"></i>Messages
-    {% if unread_messages_count %}
-        <span class="badge bg-danger rounded-pill">{{ unread_messages_count }}</span>
-    {% endif %}
-</a>
-<a class="nav-link" href="{% url 'buyer_reports' %}">
-    <i class="fas fa-chart-line me-2"></i>Reports
-</a>
+{% block hero_image %}url('{% static "images/WhatsApp Image 2025-06-19 at 2.18.28 PM.jpeg" %}'){% endblock %}
+{% block hero_overlay %}linear-gradient(135deg, rgba(111, 66, 193, 0.8) 0%, rgba(103, 58, 183, 0.6) 100%){% endblock %}
+{% block hero_height %}250px{% endblock %}
+
+{% block hero_content %}
+<h1 class="display-5 fw-bold mb-3">Buyer Dashboard</h1>
+<p class="lead mb-4">Manage your orders and discover fresh products</p>
 {% endblock %}
 
-{% block breadcrumb %}
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{% url 'buyer_dashboard' %}">Home</a></li>
-        <li class="breadcrumb-item active">Buyer Dashboard</li>
-    </ol>
-</nav>
+{% block extra_css %}
+<style>
+.stats-card {
+    border-radius: 20px;
+    padding: 2rem;
+    color: white;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+}
+.stats-card:hover {
+    transform: translateY(-5px);
+}
+.stats-number {
+    font-size: 2.5rem;
+    font-weight: 800;
+}
+.stats-label {
+    font-size: 1rem;
+    opacity: 0.9;
+}
+.card {
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    border: none;
+}
+</style>
 {% endblock %}
+
+
 
 {% block content %}
 <div class="row mb-4">
@@ -152,17 +156,17 @@
             </div>
             <div class="card-body">
                 <div class="d-grid gap-2">
-                    {% comment %} <a href="{% url 'browse_products' %}" class="btn btn-outline-primary"> {% endcomment %}
+                    <a href="{% url 'products:list' %}" class="btn btn-outline-primary">
                         <i class="fas fa-search me-2"></i>Browse Products
                     </a>
-                    {% comment %} <a href="{% url 'buyer_orders' %}" class="btn btn-outline-info"> {% endcomment %}
+                    <a href="{% url 'orders:list' %}" class="btn btn-outline-info">
                         <i class="fas fa-list me-2"></i>View Orders
                     </a>
-                    {% comment %} <a href="{% url 'buyer_suppliers' %}" class="btn btn-outline-success"> {% endcomment %}
-                        <i class="fas fa-users me-2"></i>Find Suppliers
+                    <a href="{% url 'carts:detail' %}" class="btn btn-outline-success">
+                        <i class="fas fa-shopping-cart me-2"></i>My Cart
                     </a>
-                    {% comment %} <a href="{% url 'buyer_messages' %}" class="btn btn-outline-warning"> {% endcomment %}
-                        <i class="fas fa-envelope me-2"></i>Messages
+                    <a href="{% url 'profiles:detail' %}" class="btn btn-outline-warning">
+                        <i class="fas fa-user me-2"></i>My Profile
                     </a>
                 </div>
             </div>
