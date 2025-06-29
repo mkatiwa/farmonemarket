@@ -112,7 +112,7 @@
                                 {% for order in recent_orders %}
                                 <tr>
                                     <td>
-                                        {% comment %} <a href="{% url 'order_detail' order.id %}" class="text-decoration-none"> {% endcomment %}
+                                        <a href="{% url 'order_detail' order.id %}" class="text-decoration-none">
                                             #{{ order.id }}
                                         </a>
                                     </td>
@@ -131,7 +131,7 @@
                         </table>
                     </div>
                     <div class="text-center mt-3">
-                        {% comment %} <a href="{% url 'buyer_orders' %}" class="btn btn-primary">View All Orders</a> {% endcomment %}
+                        <a href="{% url 'buyer_orders' %}" class="btn btn-primary">View All Orders</a>
                     </div>
                 {% else %}
                     <div class="text-center py-4">

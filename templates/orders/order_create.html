@@ -10,7 +10,7 @@
 <body class="bg-gray-50">
     <div class="max-w-4xl mx-auto p-6">
         <div class="mb-6">
-            <a href="{% url 'orders:order_list' %}" class="text-blue-600 hover:text-blue-800 mb-4 inline-flex items-center">
+            <a href="{% url 'orders:order_list/1/' %}" class="text-blue-600 hover:text-blue-800 mb-4 inline-flex items-center">
                 <i class="fas fa-arrow-left mr-2"></i> Back to Orders
             </a>
             <h1 class="text-3xl font-bold text-gray-900">Create New Order</h1>
@@ -132,7 +132,7 @@
                 </div>
 
                 <div class="border-t pt-6 flex justify-end gap-3">
-                    <a href="{% url 'orders:order_list' %}" class="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors">
+                    <a href="{% url 'orders:order_list/1/' %}" class="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors">
                         Cancel
                     </a>
                     <button type="submit" class="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
