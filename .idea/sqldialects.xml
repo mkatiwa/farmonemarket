@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SqlDialectMappings">
+    <file url="file://$APPLICATION_CONFIG_DIR$/consoles/db/402e469b-c1d8-419e-a1ef-25b1a8eba858/console.sql" dialect="SQLite" />
+    <file url="file://$USER_HOME$/Downloads/sql-course-materials (1)/SQL Course Materials/create-databases.sql" dialect="SQLite" />
+    <file url="file://$USER_HOME$/Downloads/sql-course-materials (1)/SQL Course Materials/create-db-hr.sql" dialect="SQLite" />
+    <file url="file://$USER_HOME$/Downloads/sql-course-materials (1)/SQL Course Materials/create-db-inventory.sql" dialect="SQLite" />
+    <file url="file://$USER_HOME$/Downloads/sql-course-materials (1)/SQL Course Materials/create-db-invoicing.sql" dialect="SQLite" />
+    <file url="file://$USER_HOME$/Downloads/sql-course-materials (1)/SQL Course Materials/create-db-store.sql" dialect="SQLite" />
+    <file url="PROJECT" dialect="SQLite" />
+  </component>
+</project>
