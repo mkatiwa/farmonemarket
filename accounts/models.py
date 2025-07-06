@@ -48,6 +48,11 @@ class User(AbstractUser):
     EMAIL_FIELD = 'email'
 
     class Meta:
+        db_table = 'store_customer'
+        indexes = [
+            models.Index(fields=['first_name', 'last_name'])
+        ]
+
         verbose_name = 'User'
         verbose_name_plural = 'Users'
         ordering = ['-created_at']

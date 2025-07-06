@@ -38,9 +38,9 @@ class Product(models.Model):
         help_text="Product price"
     )
     category = models.ForeignKey(
-        Category, 
+        Category,
         on_delete=models.SET_NULL, 
-        null=True, 
+        null=True, blank=True,
         related_name='products',
         help_text="Product category"
     )
@@ -71,14 +71,15 @@ class Product(models.Model):
     )
 
     class Meta:
-        verbose_name = 'Product'
-        verbose_name_plural = 'Products'
-        ordering = ['-created_at']
-        indexes = [
-            models.Index(fields=['name']),
-            models.Index(fields=['status']),
-            models.Index(fields=['price']),
-        ]
+        ordering = ['name']
+        # verbose_name = 'Product'
+        # verbose_name_plural = 'Products'
+        
+        # indexes = [
+        #     models.Index(fields=['name']),
+        #     models.Index(fields=['status']),
+        #     models.Index(fields=['price']),
+        # ]
 
     def __str__(self):
         return self.name

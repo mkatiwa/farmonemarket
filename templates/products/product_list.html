@@ -17,6 +17,8 @@
     overflow: hidden;
     background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
     position: relative;
+    z-index: 1;
+
 }
 
 .product-card::before {
@@ -29,7 +31,7 @@
     background: linear-gradient(45deg, rgba(45, 143, 71, 0.1), rgba(253, 126, 20, 0.1));
     opacity: 0;
     transition: opacity 0.3s ease;
-    z-index: 1;
+    z-index: 0;
 }
 
 .product-card:hover::before {
@@ -37,8 +39,9 @@
 }
 
 .product-card:hover {
-    transform: translateY(-10px) scale(1.03);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    background: linear-gradient(145deg, #ffffff 0%, #f1f1f1 100%);
+    cursor: pointer;
 }
 
 .product-image {
@@ -340,8 +343,8 @@
                         by {{ product.farmer.first_name }} {{ product.farmer.last_name }}
                     </small>
                 </div>
-                
-                <!-- Action Buttons -->
+
+            <!-- Fixed Version - Add to Cart -->
                 <div class="mt-auto">
                     <div class="row g-2">
                         <div class="col-6">
@@ -352,13 +355,15 @@
                         <div class="col-6">
                             {% if user.is_authenticated and user.is_buyer %}
                                 {% if product.stock_quantity > 0 %}
-                                    <form method="post" action="{% url 'carts:add' product.id %}" class="w-100" onsubmit="return true;">
+                                    <form method="post" action="{% url 'carts:add' product.id %}" class="w-100">
                                         {% csrf_token %}
                                         <input type="hidden" name="quantity" value="1">
                                         <button type="submit" class="btn btn-add-cart btn-sm w-100">
                                             <i class="fas fa-shopping-cart me-1"></i>Add
                                         </button>
                                     </form>
+
+
                                 {% else %}
                                     <button class="btn btn-secondary btn-sm w-100" disabled>
                                         <i class="fas fa-times me-1"></i>Sold Out

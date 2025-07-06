@@ -36,26 +36,18 @@
     cursor: pointer;
 }
 .payment-option:hover {
-    border-color: #0d6efd;
-    background: rgba(13, 110, 253, 0.05);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    background: linear-gradient(145deg, #ffffff 0%, #f1f1f1 100%);
 }
 .payment-option.selected {
     border-color: #0d6efd;
     background: linear-gradient(145deg, rgba(13, 110, 253, 0.1), rgba(111, 66, 193, 0.05));
-}
-.order-item {
-    border-radius: 10px;
-    transition: all 0.3s ease;
-}
-.order-item:hover {
-    background: linear-gradient(145deg, #f8f9fa, #e9ecef);
 }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="row">
-    <!-- Checkout Form -->
     <div class="col-lg-8">
         <div class="checkout-card mb-4">
             <div class="card-header text-white" style="background: linear-gradient(45deg, #28a745, #20c997);">
@@ -64,60 +56,27 @@
             <div class="card-body">
                 <form method="post" action="{% url 'orders:create' %}">
                     {% csrf_token %}
-                    
-                    {% if form.non_field_errors %}
-                    <div class="alert alert-danger">
-                        {% for error in form.non_field_errors %}
-                            {{ error }}
-                        {% endfor %}
-                    </div>
-                    {% endif %}
-                    
-                    <!-- Shipping Address -->
+
                     <div class="form-section">
                         <h5 class="text-primary"><i class="fas fa-map-marker-alt me-2"></i>Delivery Address</h5>
                         <div class="mb-3">
                             <label for="delivery_address" class="form-label">Address</label>
                             <textarea class="form-control" id="delivery_address" name="delivery_address" rows="3" required>{{ user.address }}</textarea>
-                            {% if form.delivery_address.errors %}
-                                <div class="text-danger">
-                                    {% for error in form.delivery_address.errors %}
-                                        {{ error }}
-                                    {% endfor %}
-                                </div>
-                            {% endif %}
                         </div>
-                        
                         <div class="mb-3">
                             <label for="phone_number" class="form-label">Phone Number</label>
                             <input type="tel" class="form-control" id="phone_number" name="phone_number" value="{{ user.phone }}" required>
-                            {% if form.phone_number.errors %}
-                                <div class="text-danger">
-                                    {% for error in form.phone_number.errors %}
-                                        {{ error }}
-                                    {% endfor %}
-                                </div>
-                            {% endif %}
                         </div>
                     </div>
-                    
-                    <!-- Additional Notes -->
+
                     <div class="form-section">
                         <h5 class="text-info"><i class="fas fa-sticky-note me-2"></i>Additional Information</h5>
                         <div class="mb-3">
                             <label for="notes" class="form-label">Order Notes (optional)</label>
-                            <textarea class="form-control" id="notes" name="notes" rows="3" placeholder="Special instructions for delivery or order"></textarea>
-                            {% if form.notes.errors %}
-                                <div class="text-danger">
-                                    {% for error in form.notes.errors %}
-                                        {{ error }}
-                                    {% endfor %}
-                                </div>
-                            {% endif %}
+                            <textarea class="form-control" id="notes" name="notes" rows="3"></textarea>
                         </div>
                     </div>
-                    
-                    <!-- Payment Method -->
+
                     <div class="form-section">
                         <h5 class="text-warning"><i class="fas fa-credit-card me-2"></i>Payment Method</h5>
                         <div class="mb-3">
@@ -127,7 +86,6 @@
                                     <label class="form-check-label fw-bold" for="payment_cash">
                                         <i class="fas fa-money-bill-wave me-2 text-success"></i>Cash on Delivery
                                     </label>
-                                    <small class="d-block text-muted">Pay when your order arrives</small>
                                 </div>
                             </div>
                             <div class="payment-option" onclick="selectPayment('bank')">
@@ -136,7 +94,6 @@
                                     <label class="form-check-label fw-bold" for="payment_bank">
                                         <i class="fas fa-university me-2 text-primary"></i>Bank Transfer
                                     </label>
-                                    <small class="d-block text-muted">Transfer to our bank account</small>
                                 </div>
                             </div>
                             <div class="payment-option" onclick="selectPayment('mobile')">
@@ -145,33 +102,45 @@
                                     <label class="form-check-label fw-bold" for="payment_mobile">
                                         <i class="fas fa-mobile-alt me-2 text-info"></i>Mobile Money
                                     </label>
-                                    <small class="d-block text-muted">Pay via mobile money service</small>
                                 </div>
                             </div>
-                            {% if form.payment_method.errors %}
-                                <div class="text-danger">
-                                    {% for error in form.payment_method.errors %}
-                                        {{ error }}
-                                    {% endfor %}
-                                </div>
-                            {% endif %}
                         </div>
-                    </div>
-                    
-                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                        <a href="{% url 'carts:detail' %}" class="btn btn-outline-secondary me-md-2">
-                            <i class="fas fa-arrow-left me-2"></i>Back to Cart
-                        </a>
-                        <button type="submit" class="btn btn-success">
-                            <i class="fas fa-check-circle me-2"></i>Place Order
-                        </button>
+
+                        <!-- M-Pesa Form -->
+                        <div id="mpesa-form" style="display: none;">
+                            <form method="POST" action="{% url 'mpesa:stk_push' %}">
+                                {% csrf_token %}
+                                <div class="mb-3">
+                                    <label for="mpesa_phone" class="form-label fw-bold">Enter M-Pesa Phone Number</label>
+                                    <input type="text" name="phone" id="mpesa_phone" class="form-control" placeholder="e.g. 2547XXXXXXXX" required>
+                                </div>
+                                <input type="hidden" name="amount" value="{{ cart.total_price }}">
+                                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                    <a href="{% url 'carts:detail' %}" class="btn btn-outline-secondary me-md-2">
+                                        <i class="fas fa-arrow-left me-2"></i>Back to Cart
+                                    </a>
+                                    <button type="submit" class="btn btn-warning">
+                                        <i class="fas fa-mobile-alt me-2"></i>Pay Now
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Default Place Order Button -->
+                        <div id="place-order-btn" class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{% url 'carts:detail' %}" class="btn btn-outline-secondary me-md-2">
+                                <i class="fas fa-arrow-left me-2"></i>Back to Cart
+                            </a>
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-check-circle me-2"></i>Place Order
+                            </button>
+                        </div>
                     </div>
                 </form>
             </div>
         </div>
     </div>
-    
-    <!-- Order Summary -->
+
     <div class="col-lg-4">
         <div class="checkout-card mb-4">
             <div class="card-header text-white" style="background: linear-gradient(45deg, #6f42c1, #8e44ad);">
@@ -182,14 +151,6 @@
                     <span>Items ({{ cart.item_count }}):</span>
                     <span>${{ cart.total_price }}</span>
                 </div>
-                <div class="d-flex justify-content-between mb-3">
-                    <span>Shipping:</span>
-                    <span>$0.00</span>
-                </div>
-                <div class="d-flex justify-content-between mb-3">
-                    <span>Tax:</span>
-                    <span>$0.00</span>
-                </div>
                 <hr>
                 <div class="d-flex justify-content-between mb-3">
                     <strong>Total:</strong>
@@ -197,8 +158,6 @@
                 </div>
             </div>
         </div>
-        
-        <!-- Order Items -->
         <div class="card">
             <div class="card-header bg-light">
                 <h5 class="mb-0">Items in Your Cart</h5>
@@ -206,7 +165,7 @@
             <div class="card-body p-0">
                 <ul class="list-group list-group-flush">
                     {% for item in cart.items.all %}
-                    <li class="list-group-item order-item">
+                    <li class="list-group-item">
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="d-flex align-items-center">
                                 {% if item.product.image %}
@@ -235,21 +194,27 @@
 {% block extra_js %}
 <script>
 function selectPayment(method) {
-    // Remove selected class from all options
+    const placeOrder = document.getElementById('place-order-btn');
+    const mpesaForm = document.getElementById('mpesa-form');
+
+    if (method === 'mobile') {
+        placeOrder.style.display = 'none';
+        mpesaForm.style.display = 'block';
+    } else {
+        placeOrder.style.display = 'flex';
+        mpesaForm.style.display = 'none';
+    }
+
     document.querySelectorAll('.payment-option').forEach(option => {
         option.classList.remove('selected');
     });
-    
-    // Add selected class to clicked option
     event.currentTarget.classList.add('selected');
-    
-    // Check the radio button
-    const radioId = 'payment_' + method;
-    document.getElementById(radioId).checked = true;
+
+    document.getElementById('payment_' + method).checked = true;
 }
 
 // Initialize first option as selected
-document.addEventListener('DOMContentLoaded', function() {
+window.addEventListener('DOMContentLoaded', () => {
     document.querySelector('.payment-option').classList.add('selected');
 });
 </script>

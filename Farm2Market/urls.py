@@ -32,6 +32,8 @@ urlpatterns = [
     # Test error pages (remove in production)
     path('test-404/', test_views.test_404, name='test_404'),
     path('test-500/', test_views.test_500, name='test_500'),
+    path('mpesa/', include('mpesa.urls', namespace='mpesa')),
+
     # Redirect root URL to products list as a temporary home page
     path('', RedirectView.as_view(pattern_name='products:list'), name='home'),
 ]

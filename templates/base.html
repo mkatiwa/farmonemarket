@@ -636,7 +636,11 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
 
-            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    {% if user.is_authenticated %}
+                        <!-- Cart with Badge -->
+
+                <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'home' %}">
@@ -650,14 +654,9 @@
                     </li>
                 </ul>
 
-                <ul class="navbar-nav">
-                    {% if user.is_authenticated %}
-                        <!-- Cart with Badge -->
                         <li class="nav-item">
                             <a class="nav-link position-relative" href="{% url 'carts:detail' %}">
                                 <i class="fas fa-shopping-cart me-1"></i>Cart
-                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning text-dark">
-                                    0
                                     <span class="visually-hidden">items in cart</span>
                                 </span>
                             </a>

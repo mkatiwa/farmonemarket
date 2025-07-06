@@ -13,6 +13,12 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 from decouple import config
 
+MPESA_CONSUMER_KEY = config('MPESA_CONSUMER_KEY', default='dummy')
+MPESA_CONSUMER_SECRET = config('MPESA_CONSUMER_SECRET')
+MPESA_SHORTCODE = config('MPESA_SHORTCODE')
+MPESA_PASSKEY = config('MPESA_PASSKEY')
+MPESA_CALLBACK_URL = config('MPESA_CALLBACK_URL')
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -47,6 +53,7 @@ INSTALLED_APPS = [
     'accounts.apps.AccountsConfig',
     'orders.apps.OrdersConfig',
     'carts.apps.CartsConfig',
+    'mpesa.apps.MpesaConfig',
     'products.apps.ProductsConfig',
     'profiles.apps.ProfilesConfig',
     'dashboard.apps.DashboardConfig'
@@ -166,3 +173,11 @@ LOGOUT_REDIRECT_URL = 'home'
 
 # Email settings (for development)
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
+
+sentry_sdk.init(
+    dsn='https://6c4aee19c2f24687885882e015c9de13@sentry.io/1777995',
+    integrations=[DjangoIntegration()]
+)
