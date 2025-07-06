@@ -144,7 +144,6 @@ pytz
 Pillow
 ```
 
----
 
 ## 🤝 Contributing
 
@@ -154,13 +153,7 @@ Pillow
 4. Push to the branch: `git push origin feature/your-feature`
 5. Open a pull request 🎉
 
----
 
-## 📜 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
 
 ## 💖 Empowering Farmers, One Click at a Time!
  
