@@ -139,18 +139,17 @@
             padding: 1rem 0;
             transition: all 0.3s ease;
             position: relative;
-            z-index: 1000;
+            z-index: 1;
             overflow: visible;
         }
 
         .navbar-brand {
             font-weight: 700;
             font-size: 1.5rem;
-            color: white !important;
+            color: black !important;
         }
-
         .nav-link {
-            color: rgba(255,255,255,0.9) !important;
+            color: black !important; /* Changed from rgba(255,255,255,0.9) to black */
             font-weight: 500;
             padding: 0.8rem 1.2rem !important;
             border-radius: 25px;
@@ -158,20 +157,21 @@
             position: relative;
         }
 
+
         .nav-link:hover {
-            color: white !important;
+            color: black !important;
             background: rgba(255,255,255,0.2);
             transform: translateY(-2px);
         }
 
         .nav-link.active {
             background: var(--accent-orange);
-            color: white !important;
+            color: black !important;
         }
 
         /* Fix dropdown menu positioning */
         .dropdown-menu {
-            z-index: 1060 !important;
+            z-index: 0 !important;
             border: none;
             box-shadow: var(--shadow-medium);
             border-radius: 15px;
@@ -225,7 +225,7 @@
         .card-with-bg {
             background-size: cover;
             background-position: center;
-            color: white;
+            color: black;
         }
 
         .card-with-bg::before {
