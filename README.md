@@ -1,9 +1,17 @@
-
 * #  Farm2Market - Digital Agri-Marketplace
 
 **Farm2Market** is a Django-based web platform that allows smallholder farmers to sell their products directly to buyers without middlemen. It provides an e-commerce-like interface for listing agricultural products, placing orders, and making payments via **M-Pesa STK Push**.
 
 ---
+
+## Screenshots
+https://drive.google.com/file/d/1B6DNztjMm2jKU2pHxE4py1O0XQ_Xlxof/view?usp=sharing
+https://drive.google.com/file/d/1iXZTMslRHzUMZa370UttTrYSPm1c_t8t/view?usp=sharing
+https://drive.google.com/file/d/1dOG6QDqwpNve58e0AdFKPs_SxhhDuAVI/view?usp=sharing
+https://drive.google.com/file/d/1XPwLBNKrA7nlqc7g8AO5QLPp_XAovsp5/view?usp=sharing
+
+## link to the Demo Video
+https://drive.google.com/file/d/1Xadrl1zrFMJq6oi6kJ1rjWhXq3uFtZis/view?usp=sharing
 
 ## 🌟 Key Features
 
