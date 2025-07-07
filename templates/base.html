@@ -9,52 +9,11 @@
 
     <!-- Bootstrap CSS or your CSS framework -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        :root {
-            --primary-green: #2d8f47;
-            --secondary-green: #20c997;
-            --accent-orange: #fd7e14;
-            --accent-yellow: #ffc107;
-            --accent-blue: #0d6efd;
-            --accent-purple: #6f42c1;
-            --light-green: #d4edda;
-            --gradient-primary: linear-gradient(135deg, #2d8f47 0%, #20c997 100%);
-            --gradient-secondary: linear-gradient(135deg, #fd7e14 0%, #ffc107 100%);
-            --gradient-accent: linear-gradient(135deg, #0d6efd 0%, #6f42c1 100%);
-            --shadow-light: 0 4px 15px rgba(0,0,0,0.1);
-            --shadow-medium: 0 8px 25px rgba(0,0,0,0.15);
-            --shadow-heavy: 0 15px 35px rgba(0,0,0,0.2);
-        }
-
-        body {
-            background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 25%, #fff3e0 50%, #e8f5e8 75%, #fce4ec 100%);
-            background-size: 400% 400%;
-            animation: bodyGradient 20s ease infinite;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            min-height: 100vh;
-        }
-
-        @keyframes bodyGradient {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        .content-wrapper {
-            background: linear-gradient(145deg, rgba(255,255,255,0.8) 0%, rgba(248,249,250,0.6) 100%);
-            backdrop-filter: blur(15px);
-            border-radius: 25px;
-            padding: 2rem;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-            border: 1px solid rgba(255,255,255,0.2);
-        }
-
-        /* Hero Section with Mixed Images and Dynamic Colors */
+        /* Hero/Background Image Section */
         .hero-section {
-            background-image: {% block hero_image %}url('{% static "images/landing.jpeg" %}'){% endblock %};
-            background-size: cover;
+            background-image: url('{% block hero_image %}{% static "images/cover image.jpg" %}{% endblock %}');   background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
             background-attachment: fixed;
@@ -725,19 +684,19 @@
     </nav>
 
     <!-- Hero/Background Image Section -->
-    {% block hero_section %}
-    <section class="hero-section">
+   {% block hero_section %}
+    <section class="hero-section" style="background-image: url('{% static 'images/veggies.jpg' %}'); background-size: cover; background-position: center;">
         <div class="hero-overlay"></div>
         <div class="hero-content">
             <div class="container">
                 {% block hero_content %}
-                <h1 class="display-4 fw-bold mb-3">Fresh Farm to Your Table</h1>
-                <p class="lead mb-4">Connecting farmers directly with buyers for fresh, quality produce</p>
+                    <h1 class="display-4 fw-bold mb-3">Fresh Farm to Your Table</h1>
+                    <p class="lead mb-4">Connecting farmers directly with buyers for fresh, quality produce</p>
                 {% endblock %}
             </div>
         </div>
     </section>
-    {% endblock %}
+{% endblock %}
 
     <!-- Search Section -->
     <section class="search-section">

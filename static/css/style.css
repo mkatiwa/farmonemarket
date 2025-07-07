@@ -1,0 +1,126 @@
+/* static/css/style.css */
+
+/* Custom styles for Farm2Market */
+
+/* Navbar outline styles */
+.navbar-outline {
+    background-color: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 2px solid #28a745;
+}
+
+.outline-brand {
+    color: #28a745 !important;
+    font-weight: bold;
+}
+
+.outline-link {
+    color: #333 !important;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    padding: 8px 12px !important;
+    margin: 0 2px;
+    transition: all 0.3s ease;
+}
+
+.outline-link:hover {
+    color: #28a745 !important;
+    border-color: #28a745;
+    background-color: rgba(40, 167, 69, 0.1);
+}
+
+.navbar-toggler.outline-toggler {
+    border: 1px solid #28a745;
+}
+
+/* Hero section */
+.hero-section {
+    padding: 100px 0 50px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+.outline-hero {
+    min-height: 60vh;
+}
+
+.outline-heading {
+    color: #2c3e50;
+    font-weight: 700;
+}
+
+.outline-text {
+    color: #6c757d;
+}
+
+.outline-btn {
+    border: 2px solid #28a745;
+    color: #28a745;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.outline-btn:hover {
+    background-color: #28a745;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+}
+
+/* Cards */
+.outline-card {
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.outline-card:hover {
+    border-color: #28a745;
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* Main content spacing */
+.main-content {
+    padding-top: 76px; /* Account for fixed navbar */
+}
+
+/* Footer */
+.outline-footer {
+    background-color: #2c3e50;
+    color: #ecf0f1;
+    margin-top: 50px;
+}
+
+.outline-footer .outline-heading {
+    color: #ecf0f1;
+}
+
+.outline-footer .outline-text {
+    color: #bdc3c7;
+}
+
+.outline-footer .outline-link {
+    color: #bdc3c7;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.outline-footer .outline-link:hover {
+    color: #28a745;
+}
+
+.outline-divider {
+    border-color: #34495e;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .hero-section {
+        padding: 80px 0 30px;
+        text-align: center;
+    }
+    
+    .outline-heading {
+        font-size: 2rem;
+    }
+}

@@ -14,7 +14,7 @@ class Cart(models.Model):
         help_text="User who owns this cart"
     )
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    updated_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         verbose_name = 'Cart'
@@ -39,7 +39,7 @@ class CartItem(models.Model):
     Individual item in a shopping cart
     """
     cart = models.ForeignKey(
-        Cart, 
+        Cart,
         on_delete=models.CASCADE,
         related_name='items',
         help_text="Cart this item belongs to"
