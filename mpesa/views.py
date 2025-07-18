@@ -78,7 +78,6 @@ from requests.auth import HTTPBasicAuth
 import json
 import logging
 from Farm2Market import settings
-from . mpesa_credentials import MpesaAccessToken, LipanaMpesaPpassword
 from django.views.decorators.csrf import csrf_exempt
 from .models import MpesaPayment
 

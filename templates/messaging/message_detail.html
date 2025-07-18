@@ -1,0 +1,9 @@
+<h2>{{ message.subject }}</h2>
+<p><strong>From:</strong> {{ message.sender.get_full_name|default:message.sender.username }}</p>
+<p><strong>To:</strong> {{ message.recipient.get_full_name|default:message.recipient.username }}</p>
+<p>{{ message.body }}</p>
+<p><em>Sent on {{ message.timestamp }}</em></p>
+<a href="{% url 'messaging:reply_message' message.id %}">Reply</a>
+<br>
+<br>
+<a href="{% url 'messaging:inbox' %}">Back to Inbox</a>

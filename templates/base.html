@@ -621,10 +621,16 @@
                             </a>
                         </li>
 
+
                         <!-- Orders -->
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'orders:list' %}">
                                 <i class="fas fa-box me-1"></i>Orders
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'messaging:inbox' %}">
+                                <i class="fas fa-box me-1"></i>messaging
                             </a>
                         </li>
 
@@ -810,6 +816,9 @@
                             </a>
                             <a href="{% url 'carts:detail' %}" class="footer-link">
                                 <i class="fas fa-shopping-cart"></i>Cart
+                            </a>
+                            <a href="{% url 'messaging:inbox' %}" class="footer-link">
+                                <i class="fas fa-box"></i>messaging
                             </a>
                         {% else %}
                             <a href="{% url 'accounts:login' %}" class="footer-link">

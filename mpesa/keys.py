@@ -1,0 +1,3 @@
+class MpesaC2bCredential:
+    CONSUMER_KEY = 'LZr2F2P8GKUlqk2ZIacGcq71sIOv6VK1nuWnmVyepwqQO6Ps'
+    CONSUMER_SECRET = 'OO8UpIn97GMr5X32Z1dIvXknYqOFJbUN6kDJfviIjL1Cmj4EADbvbKEINyd2BFgq'

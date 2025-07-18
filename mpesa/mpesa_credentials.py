@@ -22,6 +22,19 @@ class MpesaAccessToken:
         mpesa_access_token = json.loads(r.text)
         return mpesa_access_token['access_token']
 
+    import base64
+    from datetime import datetime
+
+    class LipanaMpesaPpassword:
+        business_short_code = "123456"
+        passkey = "abcde12345"
+
+        @classmethod
+        def generate_password(cls):
+            timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
+            data_to_encode = cls.business_short_code + cls.passkey + timestamp
+            encoded = base64.b64encode(data_to_encode.encode())
+            return encoded.decode('utf-8'), timestamp
 
 # class MpesaC2bCredential:
 #     consumer_key = 'LZr2F2P8GKUlqk2ZIacGcq71sIOv6VK1nuWnmVyepwqQO6Ps'

@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'orders.apps.OrdersConfig',
     'carts.apps.CartsConfig',
     'mpesa.apps.MpesaConfig',
+    'messaging.apps.MessagingConfig',
     'products.apps.ProductsConfig',
     'profiles.apps.ProfilesConfig',
     'dashboard.apps.DashboardConfig'

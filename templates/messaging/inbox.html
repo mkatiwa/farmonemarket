@@ -1,0 +1,14 @@
+<h2>Inbox</h2>
+<ul>
+  {% for msg in messages %}
+    <li>
+      <a href="{% url 'messaging:message_detail' msg.id %}">
+        {{ msg.sender.get_full_name|default:msg.sender.username }} - {{ msg.timestamp }}
+        {% if not msg.is_read %} (unread) {% endif %}
+      </a>
+    </li>
+  {% empty %}
+    <li>No messages</li>
+  {% endfor %}
+</ul>
+<a href="{% url 'messaging:send_message' %}">Send a new message</a>
