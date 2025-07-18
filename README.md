@@ -8,6 +8,7 @@
 https://drive.google.com/file/d/1Xadrl1zrFMJq6oi6kJ1rjWhXq3uFtZis/view?usp=sharing
 
 ## link to the deployed version 
+https://mawia.thisisemmanuel.pro/products/
 
 
 ## Link to Required documents
