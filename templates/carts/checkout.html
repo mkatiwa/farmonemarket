@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load currency_filters %}
 
 {% block title %}Checkout - Farm2Market{% endblock %}
 
@@ -149,12 +150,12 @@
             <div class="card-body">
                 <div class="d-flex justify-content-between mb-3">
                     <span>Items ({{ cart.item_count }}):</span>
-                    <span>${{ cart.total_price }}</span>
+                    <span>{{ cart.total_price|kes }}</span>
                 </div>
                 <hr>
                 <div class="d-flex justify-content-between mb-3">
                     <strong>Total:</strong>
-                    <strong>${{ cart.total_price }}</strong>
+                    <strong>{{ cart.total_price|kes }}</strong>
                 </div>
             </div>
         </div>
@@ -180,7 +181,7 @@
                                     <small class="text-muted">{{ item.quantity }} x ${{ item.product.price }}</small>
                                 </div>
                             </div>
-                            <span>${{ item.total_price }}</span>
+                            <span>{{ cart.total_price|kes }}</span>
                         </div>
                     </li>
                     {% endfor %}

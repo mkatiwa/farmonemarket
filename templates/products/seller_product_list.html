@@ -1,4 +1,5 @@
 {% load static %}
+{% load currency_filters %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -37,7 +38,7 @@
                 <div class="stat-label">Sold Items</div>
             </div>
             <div class="stat-item">
-                <span class="stat-number">${{ total_value|floatformat:0 }}</span>
+                <span class="stat-number">{{ total_value|floatformat:0|kes }}</span>
                 <div class="stat-label">Total Value</div>
             </div>
         </div>
@@ -71,7 +72,7 @@
                         <div class="product-name">{{ product.name }}</div>
                         <div class="product-category">{{ product.category|capfirst }}</div>
                         <div class="product-price">
-                            ${{ product.price|floatformat:2 }}
+                            {{ product.price|floatformat:2|kes }}
                             {% if product.unit %} per {{ product.unit }}{% endif %}
                         </div>
                         <div class="product-details">
@@ -127,7 +128,7 @@
 
     {% if total_value %}
     <div class="floating-total">
-        💰 Total: ${{ total_value|floatformat:0 }}
+        💰 Total: {{ total_value|floatformat:0|kes }}
     </div>
     {% endif %}
 

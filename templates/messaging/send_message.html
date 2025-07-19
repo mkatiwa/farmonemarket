@@ -1,6 +1,11 @@
+{% extends 'base.html' %}
+{% block title %}Send Message - Farm2Market{% endblock %}
+
+{% block content %}
 <h2>Send Message</h2>
 <form method="POST">
   {% csrf_token %}
   {{ form.as_p }}
   <button type="submit">Send</button>
 </form>
+{% endblock %}

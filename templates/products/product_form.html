@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load currency_filters %}
 
 {% block title %}{% if product %}Edit {{ product.name }}{% else %}Add New Product{% endif %} - Farm2Market{% endblock %}
 

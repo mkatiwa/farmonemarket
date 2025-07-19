@@ -1,11 +1,21 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load currency_filters %}
 
 {% block title %}Your Shopping Cart - Farm2Market{% endblock %}
 
-{% block hero_image %}url('{% static "images/WhatsApp Image 2025-06-19 at 2.18.55 PM.jpeg" %}'){% endblock %}
-{% block hero_overlay %}linear-gradient(135deg, rgba(253, 126, 20, 0.8) 0%, rgba(255, 193, 7, 0.6) 100%){% endblock %}
-{% block hero_height %}250px{% endblock %}
+{% block hero_section %}
+<section class="hero-section p-0" style="position: relative; height: 50vh; width: 100vw; overflow: hidden;">
+    <img src="{% static 'images/cart cover image.jpg' %}" class="d-block w-100 h-100" style="object-fit: cover;" alt="Cart Cover">
+    <div class="hero-overlay" style="height: 50vh; width: 100vw;"></div>
+    <div class="hero-content" style="position: absolute; top: 0; left: 0; width: 100vw; height: 50vh;">
+        <div class="container h-100 d-flex flex-column justify-content-center align-items-center">
+            <h1 class="display-4 fw-bold mb-3">Your Cart</h1>
+            <p class="lead mb-4">Review your selected products before checkout</p>
+        </div>
+    </div>
+</section>
+{% endblock %}
 
 {% block hero_content %}
 <h1 class="display-4 fw-bold mb-3">Your Shopping Cart</h1>
@@ -148,20 +158,20 @@
             <div class="card-body">
                 <div class="d-flex justify-content-between mb-3">
                     <span>Subtotal:</span>
-                    <span>${{ cart.total_price }}</span>
+                    <span>{{ cart.total_price|kes }}</span>
                 </div>
                 <div class="d-flex justify-content-between mb-3">
                     <span>Shipping:</span>
-                    <span>$0.00</span>
+                    <span>{{ 0|kes }}</span>
                 </div>
                 <div class="d-flex justify-content-between mb-3">
                     <span>Tax:</span>
-                    <span>$0.00</span>
+                    <span>{{ 0|kes }}</span>
                 </div>
                 <hr>
                 <div class="d-flex justify-content-between mb-3">
                     <strong>Total:</strong>
-                    <strong>${{ cart.total_price }}</strong>
+                    <strong>{{ cart.total_price|kes }}</strong>
                 </div>
                 
                 {% if cart.items.all %}

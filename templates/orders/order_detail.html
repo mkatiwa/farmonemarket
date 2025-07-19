@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load currency_filters %}
 
 {% block title %}Order {{ order.uuid }} - Farm2Market{% endblock %}
 
@@ -84,7 +85,7 @@
                         </tr>
                         <tr>
                             <th>Total:</th>
-                            <td class="fw-bold">${{ order.total_price }}</td>
+                            <td class="fw-bold">{{ order.total_price|kes }}</td>
                         </tr>
                     </table>
                 </div>

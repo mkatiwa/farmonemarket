@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load currency_filters %}
 
 {% block title %}Analytics - Farmer Dashboard{% endblock %}
 
@@ -72,7 +73,7 @@
                         <div class="card h-100">
                             <div class="card-body text-center">
                                 <h5 class="card-title text-muted">Total Revenue</h5>
-                                <h2 class="display-4 text-success">${{ total_revenue|floatformat:2 }}</h2>
+                                <h2 class="display-4 text-success">{{ total_revenue|floatformat:2|kes }}</h2>
                                 <p class="text-muted">Lifetime earnings</p>
                             </div>
                         </div>
@@ -81,7 +82,7 @@
                         <div class="card h-100">
                             <div class="card-body text-center">
                                 <h5 class="card-title text-muted">Average Order Value</h5>
-                                <h2 class="display-4 text-primary">${{ avg_order_value|floatformat:2 }}</h2>
+                                <h2 class="display-4 text-primary">{{ avg_order_value|floatformat:2|kes }}</h2>
                                 <p class="text-muted">Per order</p>
                             </div>
                         </div>
@@ -93,7 +94,7 @@
                                     {% if period == 'week' %}Weekly{% elif period == 'year' %}Annual{% else %}Monthly{% endif %} Revenue
                                 </h5>
                                 <h2 class="display-4 text-info">
-                                    ${{ sales_data|last|get:'sales'|floatformat:2 }}
+                                    {{ sales_data|last|get:'sales'|floatformat:2|kes }}
                                 </h2>
                                 <p class="text-muted">
                                     {% if period == 'week' %}Last 7 days{% elif period == 'year' %}Last 12 months{% else %}Last 30 days{% endif %}

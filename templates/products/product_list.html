@@ -1,5 +1,10 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load currency_filters %}
+
+{% block cover_image %}
+<img src="{% static 'images/products cover image.jpg' %}" alt="Products Cover" class="w-100" />
+{% endblock %}
 
 {% block title %}Products - Farm2Market{% endblock %}
 
@@ -329,8 +334,7 @@
                 
                 <!-- Price and Stock Info -->
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <span class="price-tag">${{ product.price }}</span>
-                    <div class="d-flex align-items-center">
+                    <span class="price-tag">{{ product.price|kes }}</span>                    <div class="d-flex align-items-center">
                         <i class="fas fa-boxes me-1 text-info"></i>
                         <small class="text-muted fw-bold">{{ product.stock_quantity }} left</small>
                     </div>

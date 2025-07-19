@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load currency_filters %}
 {% block title %}Buyer Dashboard - Farm2Market{% endblock %}
 
 {% block hero_image %}url('{% static "images/WhatsApp Image 2025-06-19 at 2.18.28 PM.jpeg" %}'){% endblock %}
@@ -78,7 +79,7 @@
     </div>
     <div class="col-lg-3 col-md-6 mb-3">
         <div class="stats-card" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
-            <div class="stats-number">${{ total_spent|floatformat:2 }}</div>
+            <div class="stats-number">{{ total_spent|floatformat:2|kes }}</div>
             <div class="stats-label">Total Spent</div>
             <i class="fas fa-dollar-sign float-end" style="font-size: 2rem; opacity: 0.7;"></i>
         </div>

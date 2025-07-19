@@ -6,7 +6,7 @@
             <h5 class="card-title">{{ product.name }}</h5>
             <p class="card-text">{{ product.description|truncatewords:15 }}</p>
             <p class="card-text">
-                <strong>${{ product.price }}</strong> per {{ product.unit }}
+                <strong>{{ product.price|kes }}</strong> per {{ product.unit }}
             </p>
             <a href="{% url 'products:detail' product.id %}" class="btn btn-primary">View Details</a>
         </div>

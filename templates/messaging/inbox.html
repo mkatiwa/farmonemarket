@@ -1,3 +1,22 @@
+{% extends "base.html" %}
+{% load static %}
+{% block extra_css %}{% endblock %}
+{% block title %}Inbox - Farm2Market{% endblock %}
+
+{% block hero_section %}
+<section class="hero-section p-0" style="position: relative; height: 40vh; width: 100vw; overflow: hidden;">
+    <img src="{% static 'images/messages cover image.jpg' %}" class="d-block w-100 h-100" style="object-fit: cover;" alt="Inbox Cover">
+    <div class="hero-overlay" style="height: 40vh; width: 100vw;"></div>
+    <div class="hero-content" style="position: absolute; top: 0; left: 0; width: 100vw; height: 40vh;">
+        <div class="container h-100 d-flex flex-column justify-content-center align-items-center">
+            <h1 class="display-4 fw-bold mb-3">Inbox</h1>
+            <p class="lead mb-4">View and manage your messages</p>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block content %}
 <h2>Inbox</h2>
 <ul>
   {% for msg in messages %}
@@ -12,3 +31,4 @@
   {% endfor %}
 </ul>
 <a href="{% url 'messaging:send_message' %}">Send a new message</a>
+{% endblock %}

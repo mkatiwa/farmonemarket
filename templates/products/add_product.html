@@ -1,5 +1,6 @@
 <!-- templates/products/add_product.html -->
 {% load static %}
+{% load currency_filters %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -84,7 +85,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="{{ form.price.id_for_label }}" class="form-label">
-                                                Price per Unit (USD) <span class="required">*</span>
+                                                Price per Unit (kes) <span class="required">*</span>
                                             </label>
                                             {{ form.price }}
                                             {% if form.price.errors %}

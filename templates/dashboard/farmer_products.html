@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load currency_filters %}
+
 
 {% block title %}My Products - Farmer Dashboard{% endblock %}
 
@@ -145,7 +147,7 @@
                                             </td>
                                             <td>{{ product.name }}</td>
                                             <td>{{ product.category.name }}</td>
-                                            <td>${{ product.price }}</td>
+                                            <td>{{ product.price|kes }}</td>
                                             <td>
                                                 {% if product.stock_quantity <= 5 and product.stock_quantity > 0 %}
                                                     <span class="badge bg-warning">{{ product.stock_quantity }}</span>

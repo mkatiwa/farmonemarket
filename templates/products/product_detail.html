@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load currency_filters %}
 
 {% block title %}{{ product.name }} - Farm2Market{% endblock %}
 
@@ -114,7 +115,7 @@
             </div>
             <div class="card-body">
                 <div class="mb-4">
-                    <div class="price-tag">${{ product.price }}</div>
+                    <div class="price-tag">{{ product.price|kes }}</div>
                     <div class="mb-3">
                         {% if product.stock_quantity > 10 %}
                             <span class="stock-indicator bg-success text-white">

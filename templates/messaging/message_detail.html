@@ -1,3 +1,7 @@
+{% extends 'base.html' %}
+{% block title %}Message - Farm2Market{% endblock %}
+
+{% block content %}
 <h2>{{ message.subject }}</h2>
 <p><strong>From:</strong> {{ message.sender.get_full_name|default:message.sender.username }}</p>
 <p><strong>To:</strong> {{ message.recipient.get_full_name|default:message.recipient.username }}</p>
@@ -7,3 +11,4 @@
 <br>
 <br>
 <a href="{% url 'messaging:inbox' %}">Back to Inbox</a>
+{% endblock %}
