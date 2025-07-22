@@ -11,6 +11,20 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
+        /* Define CSS Variables */
+        :root {
+            --primary-green: #2d8f47;
+            --secondary-green: #20c997;
+            --accent-orange: #fd7e14;
+            --accent-yellow: #ffc107;
+            --shadow-light: 0 2px 8px rgba(0,0,0,0.1);
+            --shadow-medium: 0 4px 12px rgba(0,0,0,0.15);
+            --shadow-heavy: 0 8px 25px rgba(0,0,0,0.2);
+            --gradient-primary: linear-gradient(135deg, #2d8f47 0%, #20c997 100%);
+            --gradient-secondary: linear-gradient(135deg, #fd7e14 0%, #ffc107 100%);
+            --gradient-accent: linear-gradient(135deg, #20c997 0%, #fd7e14 100%);
+        }
+
         /* Hero/Background Image Section */
         .hero-section {
             background-position: center;
@@ -31,11 +45,6 @@
             right: 0;
             bottom: 0;
             animation: gradientShift 8s ease-in-out infinite;
-        }
-
-        @keyframes gradientShift {
-            0%, 100% { opacity: 0.8; }
-            50% { opacity: 0.6; }
         }
 
         @keyframes gradientShift {
@@ -137,7 +146,7 @@
             padding: 1rem 0;
             transition: all 0.3s ease;
             position: relative;
-            z-index: 1;
+            z-index: 1000;
             overflow: visible;
         }
 
@@ -146,15 +155,15 @@
             font-size: 1.5rem;
             color: black !important;
         }
+
         .nav-link {
-            color: black !important; /* Changed from rgba(255,255,255,0.9) to black */
+            color: black !important;
             font-weight: 500;
             padding: 0.8rem 1.2rem !important;
             border-radius: 25px;
             transition: all 0.3s ease;
             position: relative;
         }
-
 
         .nav-link:hover {
             color: black !important;
@@ -167,9 +176,9 @@
             color: black !important;
         }
 
-        /* Fix dropdown menu positioning */
+        /* FIXED: Dropdown menu positioning */
         .dropdown-menu {
-            z-index: 0 !important;
+            z-index: 1050 !important; /* Fixed from 0 to 1050 */
             border: none;
             box-shadow: var(--shadow-medium);
             border-radius: 15px;
@@ -182,7 +191,7 @@
         }
 
         .navbar .dropdown {
-            position: static;
+            position: relative; /* Changed from static to relative */
         }
 
         .navbar-nav .dropdown-menu {
@@ -194,11 +203,12 @@
             transition: all 0.3s ease;
             border-radius: 10px;
             margin: 0.25rem 0.5rem;
+            color: #333 !important; /* Ensure text is visible */
         }
 
         .dropdown-item:hover {
             background: var(--gradient-primary);
-            color: white;
+            color: white !important;
             transform: translateX(5px);
         }
 
@@ -503,48 +513,46 @@
             font-weight: 600;
         }
 
-        @media (max-width: 768px) {
-            .footer-section {
-                padding: 2rem 0 1rem;
-            }
-            
-            .social-links {
-                justify-content: center;
-            }
-            
-            .footer-brand {
-                text-align: center;
-                font-size: 1.5rem;
-            }
-            
-            .footer-description {
-                text-align: center;
-            }
-        }
-
         /* Responsive Enhancements */
         @media (max-width: 768px) {
             .hero-section {
                 min-height: 350px;
                 background-attachment: scroll;
             }
-            
+
             .search-section {
                 padding: 2rem 0;
             }
-            
+
             .search-box .form-control,
             .search-box .btn {
                 padding: 12px 20px;
                 font-size: 1rem;
             }
-            
+
             .navbar {
                 padding: 0.5rem 0;
             }
-            
+
             .nav-link {
                 padding: 0.6rem 1rem !important;
+            }
+
+            .footer-section {
+                padding: 2rem 0 1rem;
+            }
+
+            .social-links {
+                justify-content: center;
+            }
+
+            .footer-brand {
+                text-align: center;
+                font-size: 1.5rem;
+            }
+
+            .footer-description {
+                text-align: center;
             }
         }
 
@@ -552,18 +560,16 @@
             .hero-content h1 {
                 font-size: 2rem !important;
             }
-            
+
             .hero-content p {
                 font-size: 1rem !important;
             }
-            
+
             .search-box .d-flex {
                 flex-direction: column;
                 gap: 1rem;
             }
         }
-
-        /* Removed loading animation */
 
         /* Scroll animations */
         .fade-in {
@@ -575,6 +581,28 @@
         .fade-in.visible {
             opacity: 1;
             transform: translateY(0);
+        }
+
+        /* Ripple effect for buttons */
+        .btn {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.6);
+            transform: scale(0);
+            animation: ripple-animation 0.6s linear;
+            pointer-events: none;
+        }
+
+        @keyframes ripple-animation {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
         }
     </style>
 
@@ -593,11 +621,7 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
 
-                <ul class="navbar-nav">
-                    {% if user.is_authenticated %}
-                        <!-- Cart with Badge -->
-
-                <div class="collapse navbar-collapse" id="navbarNav">
+            <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'home' %}">
@@ -611,14 +635,15 @@
                     </li>
                 </ul>
 
+                <ul class="navbar-nav">
+                    {% if user.is_authenticated %}
+                        <!-- Cart with Badge -->
                         <li class="nav-item">
                             <a class="nav-link position-relative" href="{% url 'carts:detail' %}">
                                 <i class="fas fa-shopping-cart me-1"></i>Cart
-                                    <span class="visually-hidden">items in cart</span>
-                                </span>
+                                <span class="visually-hidden">items in cart</span>
                             </a>
                         </li>
-
 
                         <!-- Orders -->
                         <li class="nav-item">
@@ -627,21 +652,22 @@
                             </a>
                         </li>
 
+                        <!-- Messaging -->
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'messaging:inbox' %}">
-                                <i class="fas fa-box me-1"></i>messaging
+                                <i class="fas fa-envelope me-1"></i>Messaging
                             </a>
                         </li>
 
-                        <!-- Account/Dashboard -->
+                        <!-- Account/Dashboard Dropdown -->
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                            <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <div class="rounded-circle bg-warning text-dark d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px;">
                                     <i class="fas fa-user"></i>
                                 </div>
                                 {{ user.first_name|default:user.username }}
                             </a>
-                            <ul class="dropdown-menu dropdown-menu-end shadow border-0" style="border-radius: 15px;">
+                            <ul class="dropdown-menu dropdown-menu-end shadow border-0">
                                 <li><a class="dropdown-item" href="{% url 'profiles:detail' %}">
                                     <i class="fas fa-user-circle me-2 text-primary"></i>My Profile
                                 </a></li>
@@ -689,38 +715,39 @@
     </nav>
 
     <!-- Hero/Background Image Section -->
-{% block hero_section %}
-<section class="hero-section p-0" style="position: relative; height: 100vh; width: 100vw; overflow: hidden;">
-    <div id="heroCarousel" class="carousel slide h-100" data-bs-ride="carousel" data-bs-interval="4000">
-        <div class="carousel-inner h-100">
-            <div class="carousel-item active h-100">
-                <img src="{% static 'images/veggies.jpg' %}" class="d-block w-100 h-100" style="object-fit: cover;" alt="Cover 1">
+    {% block hero_section %}
+    <section class="hero-section p-0" style="position: relative; height: 100vh; width: 100vw; overflow: hidden;">
+        <div id="heroCarousel" class="carousel slide h-100" data-bs-ride="carousel" data-bs-interval="4000">
+            <div class="carousel-inner h-100">
+                <div class="carousel-item active h-100">
+                    <img src="{% static 'images/veggies.jpg' %}" class="d-block w-100 h-100" style="object-fit: cover;" alt="Cover 1">
+                </div>
+                <div class="carousel-item h-100">
+                    <img src="{% static 'images/products cover image.jpg' %}" class="d-block w-100 h-100" style="object-fit: cover;" alt="Cover 2">
+                </div>
+                <div class="carousel-item h-100">
+                    <img src="{% static 'images/cover image 3.jpg' %}" class="d-block w-100 h-100" style="object-fit: cover;" alt="Cover 3">
+                </div>
             </div>
-            <div class="carousel-item h-100">
-                <img src="{% static 'images/products cover image.jpg' %}" class="d-block w-100 h-100" style="object-fit: cover;" alt="Cover 2">
-            </div>
-            <div class="carousel-item h-100">
-                <img src="{% static 'images/cover image 3.jpg' %}" class="d-block w-100 h-100" style="object-fit: cover;" alt="Cover 3">
+            <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon"></span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon"></span>
+            </button>
+        </div>
+        <div class="hero-overlay" style="height: 100vh; width: 100vw;"></div>
+        <div class="hero-content" style="position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;">
+            <div class="container h-100 d-flex flex-column justify-content-center align-items-center">
+                {% block hero_content %}
+                    <h1 class="display-4 fw-bold mb-3">Fresh Farm to Your Table</h1>
+                    <p class="lead mb-4">Connecting farmers directly with buyers for fresh, quality produce</p>
+                {% endblock %}
             </div>
         </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon"></span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
-            <span class="carousel-control-next-icon"></span>
-        </button>
-    </div>
-    <div class="hero-overlay" style="height: 100vh; width: 100vw;"></div>
-    <div class="hero-content" style="position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;">
-        <div class="container h-100 d-flex flex-column justify-content-center align-items-center">
-            {% block hero_content %}
-                <h1 class="display-4 fw-bold mb-3">Fresh Farm to Your Table</h1>
-                <p class="lead mb-4">Connecting farmers directly with buyers for fresh, quality produce</p>
-            {% endblock %}
-        </div>
-    </div>
-</section>
-{% endblock %}
+    </section>
+    {% endblock %}
+
     <!-- Search Section -->
     <section class="search-section">
         <div class="container">
@@ -795,12 +822,12 @@
 
                 <!-- Main Footer Content -->
                 <div class="row">
-                    <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="col-md-6 mb-4">
                         <div class="footer-brand">
                             <i class="fas fa-seedling me-2"></i>Farm2Market
                         </div>
                         <p class="footer-description">
-                            Connecting farmers directly with buyers for fresh, quality produce. 
+                            Connecting farmers directly with buyers for fresh, quality produce.
                             Building a sustainable future through direct farm-to-table relationships.
                         </p>
                         <div class="social-links">
@@ -818,8 +845,8 @@
                             </a>
                         </div>
                     </div>
-
-                    <div class="col-lg-2 col-md-6 mb-4">
+                    <div class="row">
+                    <div class="col-lg-2 col-md-4 col-sm-6 mb-4">
                         <h6 class="footer-title">Quick Links</h6>
                         <a href="{% url 'home' %}" class="footer-link">
                             <i class="fas fa-home"></i>Home
@@ -832,52 +859,83 @@
                                 <i class="fas fa-box"></i>My Orders
                             </a>
                             <a href="{% url 'carts:detail' %}" class="footer-link">
-                                <i class="fas fa-shopping-cart"></i>Cart
-                            </a>
-                            <a href="{% url 'messaging:inbox' %}" class="footer-link">
-                                <i class="fas fa-box"></i>messaging
-                            </a>
-                        {% else %}
-                            <a href="{% url 'accounts:login' %}" class="footer-link">
-                                <i class="fas fa-sign-in-alt"></i>Login
-                            </a>
-                            <a href="{% url 'accounts:register' %}" class="footer-link">
-                                <i class="fas fa-user-plus"></i>Register
+                                <i class="fas fa-shopping-cart"></i>My Cart
                             </a>
                         {% endif %}
-                    </div>
-
-                    <div class="col-lg-2 col-md-6 mb-4">
-                        <h6 class="footer-title">Categories</h6>
-                        <a href="{% url 'products:list' %}?category=Vegetables" class="footer-link">
-                            <i class="fas fa-carrot"></i>Vegetables
-                        </a>
-                        <a href="{% url 'products:list' %}?category=Fruits" class="footer-link">
-                            <i class="fas fa-apple-alt"></i>Fruits
-                        </a>
-                        <a href="{% url 'products:list' %}?category=Grains" class="footer-link">
-                            <i class="fas fa-seedling"></i>Grains
-                        </a>
-                        <a href="{% url 'products:list' %}?category=Dairy" class="footer-link">
-                            <i class="fas fa-cheese"></i>Dairy
-                        </a>
-                        <a href="{% url 'products:list' %}?category=Herbs" class="footer-link">
-                            <i class="fas fa-leaf"></i>Herbs
+                        <a href="#" class="footer-link">
+                            <i class="fas fa-question-circle"></i>Help & Support
                         </a>
                     </div>
 
+                    <div class="col-lg-2 col-md-4 col-sm-6 mb-4">
+                        <h6 class="footer-title">For Farmers</h6>
+                        {% if user.is_authenticated and user.is_farmer %}
+                            <a href="{% url 'dashboard:farmer' %}" class="footer-link">
+                                <i class="fas fa-tractor"></i>Dashboard
+                            </a>
+                        {% endif %}
+                        <a href="#" class="footer-link">
+                            <i class="fas fa-leaf"></i>Sell Products
+                        </a>
+                        <a href="#" class="footer-link">
+                            <i class="fas fa-chart-line"></i>Analytics
+                        </a>
+                        <a href="#" class="footer-link">
+                            <i class="fas fa-handshake"></i>Partner with Us
+                        </a>
+                        <a href="#" class="footer-link">
+                            <i class="fas fa-seedling"></i>Farm Management
+                        </a>
+                    </div>
+
+                    <div class="col-lg-2 col-md-4 col-sm-6 mb-4">
+                        <h6 class="footer-title">For Buyers</h6>
+                        {% if user.is_authenticated and user.is_buyer %}
+                            <a href="{% url 'dashboard:buyer' %}" class="footer-link">
+                                <i class="fas fa-shopping-bag"></i>Dashboard
+                            </a>
+                        {% endif %}
+                        <a href="{% url 'products:list' %}" class="footer-link">
+                            <i class="fas fa-shopping-cart"></i>Shop Now
+                        </a>
+                        <a href="#" class="footer-link">
+                            <i class="fas fa-star"></i>Reviews
+                        </a>
+                        <a href="#" class="footer-link">
+                            <i class="fas fa-truck"></i>Delivery Info
+                        </a>
+                        <a href="#" class="footer-link">
+                            <i class="fas fa-heart"></i>Wishlist
+                        </a>
+                    </div>
+                    <br>
+                    <br>
                     <div class="col-lg-4 col-md-6 mb-4">
                         <h6 class="footer-title">Stay Connected</h6>
-                        <p class="footer-description mb-3">
-                            Subscribe to our newsletter for fresh updates, seasonal produce alerts, and exclusive farmer deals.
+                        <p style="color: #b8bcc8; margin-bottom: 1rem;">
+                            Subscribe to our newsletter for fresh updates and exclusive offers.
                         </p>
                         <div class="newsletter-form">
-                            <form class="d-flex flex-column gap-3">
-                                <input type="email" class="form-control newsletter-input" placeholder="Enter your email address" required>
-                                <button type="submit" class="btn newsletter-btn">
-                                    <i class="fas fa-paper-plane me-2"></i>Subscribe Now
+                            <form class="d-flex flex-column flex-sm-row gap-2">
+                                <input type="email" class="newsletter-input flex-grow-1" placeholder="Enter your email" required>
+                                <button type="submit" class="newsletter-btn">
+                                    <i class="fas fa-paper-plane me-1"></i>Subscribe
                                 </button>
                             </form>
+                        </div>
+                    </div>
+
+                        <div class="col-lg-4 col-md-6 mb-4">
+                            <h6 class="footer-title" style="font-size: 1rem; margin-bottom: 1rem;">Contact Info</h6>
+                            <div class="footer-link" style="pointer-events: none;">
+                                <i class="fas fa-map-marker-alt"></i>Nairobi, Kenya
+                            </div>
+                            <div class="footer-link" style="pointer-events: none;">
+                                <i class="fas fa-phone"></i>+254 123 456 789
+                            </div>
+                            <div class="footer-link" style="pointer-events: none;">
+                                <i class="fas fa-envelope"></i>info@farm2market.ke
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -889,147 +947,151 @@
             <div class="container">
                 <div class="row align-items-center">
                     <div class="col-md-6">
-                        <p class="mb-0">
-                            <i class="fas fa-copyright me-1"></i>
-                            2025 Farm2Market. All rights reserved.
+                        <p class="mb-0" style="color: #b8bcc8;">
+                            &copy; 2025 Farm2Market. All rights reserved.
                         </p>
                     </div>
-                    <div class="col-md-6 text-md-end">
-                        <p class="mb-0">
-                            <span class="me-3">
-                                <i class="fas fa-heart text-danger me-1"></i>
-                                Made with love for farmers
-                            </span>
-                            <span>
-                                <i class="fas fa-leaf text-success me-1"></i>
-                                Sustainable & Fresh
-                            </span>
-                        </p>
+                    <div class="col-md-6">
+                        <div class="d-flex justify-content-md-end justify-content-center gap-3 mt-2 mt-md-0">
+                            <a href="#" class="footer-link" style="padding: 0;">Privacy Policy</a>
+                            <a href="#" class="footer-link" style="padding: 0;">Terms of Service</a>
+                            <a href="#" class="footer-link" style="padding: 0;">Support</a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </footer>
 
-    <!-- Bootstrap JS -->
+    <!-- Bootstrap Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Font Awesome for icons -->
-    <script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
+    <!-- Font Awesome -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+
+    <!-- Custom JavaScript -->
+    <script>
+        // Ripple effect for buttons
+        document.addEventListener('DOMContentLoaded', function() {
+            const buttons = document.querySelectorAll('.btn');
+
+            buttons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    const ripple = document.createElement('span');
+                    const rect = this.getBoundingClientRect();
+                    const size = Math.max(rect.width, rect.height);
+                    const x = e.clientX - rect.left - size / 2;
+                    const y = e.clientY - rect.top - size / 2;
+
+                    ripple.style.width = ripple.style.height = size + 'px';
+                    ripple.style.left = x + 'px';
+                    ripple.style.top = y + 'px';
+                    ripple.classList.add('ripple');
+
+                    this.appendChild(ripple);
+
+                    setTimeout(() => {
+                        ripple.remove();
+                    }, 600);
+                });
+            });
+
+            // Scroll animations
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, observerOptions);
+
+            // Observe elements with fade-in class
+            document.querySelectorAll('.fade-in').forEach(el => {
+                observer.observe(el);
+            });
+
+            // Add fade-in class to cards for scroll animation
+            document.querySelectorAll('.card').forEach(card => {
+                card.classList.add('fade-in');
+                observer.observe(card);
+            });
+
+            // Smooth scrolling for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+
+            // Auto-hide alerts after 5 seconds
+            setTimeout(function() {
+                const alerts = document.querySelectorAll('.alert');
+                alerts.forEach(alert => {
+                    const bsAlert = new bootstrap.Alert(alert);
+                    bsAlert.close();
+                });
+            }, 5000);
+
+            // Newsletter form handling
+            const newsletterForm = document.querySelector('.newsletter-form form');
+            if (newsletterForm) {
+                newsletterForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const email = this.querySelector('input[type="email"]').value;
+
+                    // Show success message
+                    const button = this.querySelector('button');
+                    const originalText = button.innerHTML;
+                    button.innerHTML = '<i class="fas fa-check me-1"></i>Subscribed!';
+                    button.disabled = true;
+
+                    setTimeout(() => {
+                        button.innerHTML = originalText;
+                        button.disabled = false;
+                        this.reset();
+                    }, 2000);
+                });
+            }
+
+            // Enhanced navbar scroll effect
+            let lastScrollTop = 0;
+            const navbar = document.querySelector('.navbar');
+
+            window.addEventListener('scroll', function() {
+                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+                if (scrollTop > 100) {
+                    navbar.style.background = 'linear-gradient(135deg, rgba(45, 143, 71, 0.95) 0%, rgba(32, 201, 151, 0.95) 100%)';
+                    navbar.style.backdropFilter = 'blur(10px)';
+                } else {
+                    navbar.style.background = 'var(--gradient-primary)';
+                    navbar.style.backdropFilter = 'none';
+                }
+
+                // Hide/show navbar on scroll
+                if (scrollTop > lastScrollTop && scrollTop > 200) {
+                    navbar.style.transform = 'translateY(-100%)';
+                } else {
+                    navbar.style.transform = 'translateY(0)';
+                }
+
+                lastScrollTop = scrollTop;
+            });
+        });
+    </script>
 
     {% block extra_js %}{% endblock %}
-    
-    <!-- Enhanced JavaScript for Interactivity -->
-    <script>
-        // Smooth scroll animations
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-        
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                }
-            });
-        }, observerOptions);
-        
-        // Observe all fade-in elements
-        document.querySelectorAll('.fade-in').forEach(el => {
-            observer.observe(el);
-        });
-        
-        // Direct form submission without loading animation
-        
-        // Navbar scroll effect
-        let lastScrollTop = 0;
-        const navbar = document.querySelector('.navbar');
-        
-        window.addEventListener('scroll', () => {
-            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-            
-            if (scrollTop > lastScrollTop && scrollTop > 100) {
-                navbar.style.transform = 'translateY(-100%)';
-            } else {
-                navbar.style.transform = 'translateY(0)';
-            }
-            
-            // Add background blur when scrolled
-            if (scrollTop > 50) {
-                navbar.style.backdropFilter = 'blur(10px)';
-                navbar.style.background = 'rgba(45, 143, 71, 0.95)';
-            } else {
-                navbar.style.backdropFilter = 'none';
-                navbar.style.background = 'linear-gradient(135deg, #2d8f47 0%, #20c997 100%)';
-            }
-            
-            lastScrollTop = scrollTop;
-        });
-        
-        // Add ripple effect to buttons
-        document.querySelectorAll('.btn').forEach(button => {
-            button.addEventListener('click', function(e) {
-                const ripple = document.createElement('span');
-                const rect = this.getBoundingClientRect();
-                const size = Math.max(rect.width, rect.height);
-                const x = e.clientX - rect.left - size / 2;
-                const y = e.clientY - rect.top - size / 2;
-                
-                ripple.style.width = ripple.style.height = size + 'px';
-                ripple.style.left = x + 'px';
-                ripple.style.top = y + 'px';
-                ripple.classList.add('ripple');
-                
-                this.appendChild(ripple);
-                
-                setTimeout(() => {
-                    ripple.remove();
-                }, 600);
-            });
-        });
-        
-        // Enhanced search functionality
-        const searchInput = document.querySelector('input[type="search"]');
-        if (searchInput) {
-            searchInput.addEventListener('focus', function() {
-                this.parentElement.style.transform = 'scale(1.02)';
-            });
-            
-            searchInput.addEventListener('blur', function() {
-                this.parentElement.style.transform = 'scale(1)';
-            });
-        }
-        
-        // Add CSS for ripple effect
-        const style = document.createElement('style');
-        style.textContent = `
-            .btn {
-                position: relative;
-                overflow: hidden;
-            }
-            
-            .ripple {
-                position: absolute;
-                border-radius: 50%;
-                background: rgba(255, 255, 255, 0.6);
-                transform: scale(0);
-                animation: ripple-animation 0.6s linear;
-                pointer-events: none;
-            }
-            
-            @keyframes ripple-animation {
-                to {
-                    transform: scale(4);
-                    opacity: 0;
-                }
-            }
-            
-            .navbar {
-                transition: all 0.3s ease;
-            }
-        `;
-        document.head.appendChild(style);
-    </script>
 </body>
 </html>
