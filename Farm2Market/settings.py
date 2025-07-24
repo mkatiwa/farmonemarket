@@ -32,14 +32,15 @@ import os
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-=*#&fqyyw2ohzsbx@&r3xstv3024+%#3s9i+n*c6)3ikfa00m$')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DJANGO_DEBUG', 'True') == 'True'
+DEBUG = os.environ.get('DJANGO_DEBUG', 'False') == 'False'
 
 # Custom error pages
 if not DEBUG:
     ALLOWED_HOSTS = ['*']  # Configure properly for production
 
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1,mawia.thisisemmanuel.pro').split(',')
 
+CSRF_TRUSTED_ORIGINS = os.environ.get('CSRF_TRUSTED_ORIGINS', 'https://mawia.thisisemmanuel.pro').split(',')
 
 # Application definition
 
