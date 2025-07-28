@@ -55,7 +55,7 @@
                 <h4 class="mb-0"><i class="fas fa-shipping-fast me-2"></i>Shipping Information</h4>
             </div>
             <div class="card-body">
-                <form method="post" action="{% url 'orders:create' %}">
+                <form method="post" id='checkoutForm' action="{% url 'orders:create' %}">
                     {% csrf_token %}
 
                     <div class="form-section">
@@ -109,23 +109,39 @@
 
                         <!-- M-Pesa Form -->
                         <div id="mpesa-form" style="display: none;">
-                            <form method="POST" action="{% url 'mpesa:payment' %}">
-                                {% csrf_token %}
+{#                            <form method="POST" action="{% url 'mpesa:payment' %}">#}
+{#                                {% csrf_token %}#}
                                 <div class="mb-3">
                                     <label for="mpesa_phone" class="form-label fw-bold">Enter M-Pesa Phone Number</label>
                                     <input type="text" name="phone" id="mpesa_phone" class="form-control" placeholder="e.g. 2547XXXXXXXX" required>
                                 </div>
-                                <input type="hidden" name="amount" value="{{ cart.total_price|kes }}">
+{#                                <input type="hidden" name="amount" value="{{ cart.total_price|kes }}">#}
+                                    <!-- Payment Method (now only M-Pesa) -->
+                                <div class="form-section">
+                                    <h5 class="text-warning"><i class="fas fa-credit-card me-2"></i>Payment Method</h5>
+                                    <div class="payment-option selected">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="payment_method" id="payment_mpesa" value="mpesa" checked>
+                                            <label class="form-check-label fw-bold" for="payment_mpesa">
+                                                <i class="fas fa-mobile-alt me-2 text-info"></i>M-Pesa
+                                            </label>
+                                            <small class="d-block text-muted">Pay instantly via M-Pesa STK Push</small>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                                     <a href="{% url 'carts:detail' %}" class="btn btn-outline-secondary me-md-2">
                                         <i class="fas fa-arrow-left me-2"></i>Back to Cart
                                     </a>
-                                    <button type="submit" class="btn btn-warning">
-                                        <i class="fas fa-mobile-alt me-2"></i>Pay Now
+                                    <button type="submit" id='submitBtn' class="btn btn-warning">
+                                        <i class="fas fa-mobile-alt me-2"></i>
+                                        <span id= 'submitText' >Pay Now </span>
+                                        <span id="submitSpinner" class="spinner-border spinner-border-sm d-none" role="status"></span>
                                     </button>
                                 </div>
-                            </form>
                         </div>
+                    </div>
+                </form>
 
                         <!-- Default Place Order Button -->
                         <div id="place-order-btn" class="d-grid gap-2 d-md-flex justify-content-md-end">
@@ -137,8 +153,8 @@
                             </button>
                         </div>
                     </div>
-                </form>
-            </div>
+{#                </form>#}
+    </div>
         </div>
     </div>
 
@@ -189,11 +205,37 @@
             </div>
         </div>
     </div>
-</div>
+    <!-- Hidden form for M-Pesa redirection -->
+<form id="mpesaRedirectForm" method="post" action="{% url 'mpesa:initiate_payment' %}" style="display: none;">
+    {% csrf_token %}
+    <input type="hidden" name="phone_number" id="redirectPhone">
+    <input type="hidden" name="amount" value="{{ cart.total_price }}">
+</form>
 {% endblock %}
 
 {% block extra_js %}
 <script>
+Document.addEventListener('DOMContentLoaded', function() {
+    const checkoutForm = document.getElementById('checkoutForm');
+    const mpesaRedirectForm = document.getElementById('mpesaRedirectForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const submitText = document.getElementById('submitText');
+    const submitSpinner = document.getElementById('submitSpinner');
+checkoutForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        // Show loading state
+        submitText.textContent = "Initiating M-Pesa...";
+        submitSpinner.classList.remove('d-none');
+        submitBtn.disabled = true;
+// Set phone number for M-Pesa
+        const phoneNumber = document.getElementById('phone_number').value;
+        document.getElementById('redirectPhone').value = phoneNumber;
+
+        // Submit the hidden M-Pesa form
+        mpesaRedirectForm.submit();
+    });
+});
 function selectPayment(method) {
     const placeOrder = document.getElementById('place-order-btn');
     const mpesaForm = document.getElementById('mpesa-form');

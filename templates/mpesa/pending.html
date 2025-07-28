@@ -1,141 +1,148 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-        <title>Document</title>
-    </head>
-    <body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Processing</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <style>
+        .payment-status-container {
+            max-width: 600px;
+            margin: 2rem auto;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        .status-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <div class="container">
+        <div class="payment-status-container bg-white">
+            <div class="text-center">
+                <h3 class="mb-4" id="status-title">Completing Your Payment</h3>
 
-        {% load Bootstrap5%}
-        <div class="card shadow-sm p-5" style="max-width: 600px; width: 100%">
-            {% if error_message%}
-                <div class="alert alert-danger text-center" role="alert">
-                    {{error_message}}
+                <div id="payment-processing">
+                    <div class="status-icon text-primary">
+                        <i class="fas fa-spinner fa-spin"></i>
+                    </div>
+                    <div class="alert alert-info">
+                        <p>We've sent an M-Pesa payment request to your phone.</p>
+                        <p>Please enter your M-Pesa PIN to complete the transaction.</p>
+                    </div>
+                    <div class="progress mt-3">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated"
+                             style="width: 100%"></div>
+                    </div>
                 </div>
-            {% endif %}
-            <h3 class="text-center mb-4" id="confirm-text">Confirm Your Payment</h3>
-            <div class="text-center mt-3" id="status-container">
-                <h5
-                class="alert alert-info d-flex align-items-center justify-content-center"
-                role="alert"
-                id="initial-message"
-                >
-                M-pesa STK Push sent successfully. Enter your M-pesa PIN to complete the transaction.
 
-                </h5>
-
-
-                <div
-                    class="spinner-loader text-primary"
-                    role="status"
-                    id="loading-spinner"
-                >
-                    <span class="visually-hidden">Loading...</span>
+                <div id="payment-success" style="display: none;">
+                    <div class="status-icon text-success">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="alert alert-success">
+                        <h4>Payment Successful!</h4>
+                        <p id="success-message">Your payment has been processed successfully.</p>
+                        <p>Transaction ID: <strong id="mpesa-code"></strong></p>
+                        <a href="{% url 'orders:success' %}" class="btn btn-success mt-3">
+                            Continue to Order Summary
+                        </a>
+                    </div>
                 </div>
-                <p class="mt-2" id="status-message">Waiting for confirmation...</p>
-            </div>
-            <div
-            class="d-flex justify-content-center mt-4">
-                <a
-                href="javascript:void(0);"
-                class="btn btn-warning"
-                id= "retry-button"
-                style="display: none"
-                onclick="location.reload();"
-                >
-                    Retry Payment
-                </a>
-            </div>
 
+                <div id="payment-failed" style="display: none;">
+                    <div class="status-icon text-danger">
+                        <i class="fas fa-times-circle"></i>
+                    </div>
+                    <div class="alert alert-danger">
+                        <h4>Payment Failed</h4>
+                        <p id="error-message"></p>
+                        <a href="{% url 'carts:checkout' %}" class="btn btn-warning mt-3">
+                            <i class="fas fa-redo me-2"></i>Try Again
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
-        <!--Bootstrap JS -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
-        <script>
-            let reqcount = 0;
-            const maxAttempts = 15;
-            const checkoutRequestID = "{{checkout_request_id}}";
-            const statusContainer = document.getElementById("status-container");
-            const loadingSpinner = document.getElementById("loading-spinner");
-            const statusMessage = document.getElementById("status-message");
-            const retryButton = document.getElementById("retry-button");
-            const initialMessage = document.getElementById("initial-message");
-            const confirmText = document.getElementById("confirm-text");
+    </div>
 
-            const confettiEffect = () =>{
-                confetti({
-                    particleCount: 100,
-                    spread: 70,
-                    origin: {y: 0.6}
-                });
-            }
-            const stkPushQuery =(checkout_request_id) =>{
-                const timer=setInterval(async() =>{
-                    reqcount +=1
-                    try{
-                        const response=await fetch("/stk-status-view/"),{
-                            method: "POST",
-                            headers: {
-                                "Content-Type":"application/json",
-                                "X-CSRFToken":"{{{csrf_token }}}"
-                            },
-                            body: JSON.stringify({checkout_request_id:checkoutRequestID}
-                            )};
-                            if(!response.ok) throw new Error("Failed to fetch status");
-                            const data = await response.json()
+    <script>
+        const checkoutRequestID = "{{ checkout_request_id }}";
+        const paymentProcessing = document.getElementById('payment-processing');
+        const paymentSuccess = document.getElementById('payment-success');
+        const paymentFailed = document.getElementById('payment-failed');
+        const statusTitle = document.getElementById('status-title');
+        const successMessage = document.getElementById('success-message');
+        const mpesaCode = document.getElementById('mpesa-code');
+        const errorMessage = document.getElementById('error-message');
 
-                            console.log("STK Query Response:", data);
+        let attempts = 0;
+        const maxAttempts = 20; // ~1 minute with 3s intervals
+        const checkInterval = 3000; // 3 seconds
 
-                            const resultCode = data.sttus.ResultCode;
-                            const resultDesc =
-                                data.status.ResultDesc || "Payment failed. plese try again.";
+        function checkPaymentStatus() {
+            fetch('{% url "mpesa:check_status" %}', {
+                method: 'POST',
+                headers: {
+'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({ checkout_request_id: checkoutRequestID })
+            })
+            .then(response => response.json())
+            .then(data => {
+                attempts++;
 
-                            if (data.status.errorCode ==="500.001.1001") {
-                                console.log("Payment is still being processed...");
-                            } else if(resultCode ==="0"){
-                                clearInterval(timer);
-                                loadingSpinner.style.display = "none";
-                                confirmText.style.display = "none";
-                                initialMessage.innerHTML = 'Payment succefull <svg> </svg>';
-                                statusMessage.innerHTML='
-                                <div class="text-success">
-                                    <p class="mt-2"> Thank you for completing your payment</p>
-                                    <a href="{% url 'payment'%}" class="btn btn-success">ok</a>
-                                 </div>
-                                ';
-                                 confettiEffect(); //trigger confetti on sucess
-                            }else if(resultCode){
-                                clearInterval(timer);
-                                loadingSpinner.style.display= "none";
-                                confirmText.style.display= "none";
-                                initialMessage.innerHTML = 'Payment failed <svg> </svg>';
-                                statusMessage.innerHTML ='
-                                    <div class="danger">
-                                        <svg></svg>
-                                        <p class="mt-2">&{resultDesc}</p>
-                                    </div>
-                                ';
-                            retryButton.style.display ="inline-Block";
-                            };
-                    }catch(error){
-                        console.log(error);
+                if (data.status === 'completed') {
+                    // Payment successful
+                    paymentProcessing.style.display = 'none';
+                    paymentSuccess.style.display = 'block';
+                    statusTitle.textContent = 'Payment Successful';
+                    mpesaCode.textContent = data.mpesa_code;
+
+                    // Trigger confetti effect
+                    confetti({
+                        particleCount: 100,
+                        spread: 70,
+                        origin: { y: 0.6 }
+                    });
+
+                    // Optionally redirect after delay
+                    // setTimeout(() => {
+                    //     window.location.href = "{% url 'orders:success' %}";
+                    // }, 5000);
+
+                } else if (data.status === 'failed' || attempts >= maxAttempts) {
+                    // Payment failed or timeout
+                    paymentProcessing.style.display = 'none';
+                    paymentFailed.style.display = 'block';
+                    statusTitle.textContent = 'Payment Failed';
+
+                    if (attempts >= maxAttempts) {
+                        errorMessage.textContent = 'Payment confirmation timed out. Please check your M-Pesa messages to confirm payment status.';
+                    } else {
+                        errorMessage.textContent = data.message || 'The payment was not completed. Please try again.';
                     }
-                    if (reqcount >= maxAttempts){
-                        clearInterval(timer);
-                        loadingSpinner.style.display = "none";
-                        statusMessage.innerHTML= '
-                            <div class="alert alert-warning" role="alert">
-                                You took too long to confirm the payment. Please try again
-                            </div>
+                } else {
+                    // Continue checking
+                    setTimeout(checkPaymentStatus, checkInterval);
+                }
+            })
+            .catch(error => {
+                console.error('Error checking payment status:', error);
+                setTimeout(checkPaymentStatus, checkInterval);
+            });
+        }
 
-                        ';
-                        retryButton.style.display ="inline-Block";
-                    }
-                }, 2000);
-            };
-
-            stkPushQuery(checkoutRequestID);
-        </script>
-    </body>
+        // Start checking payment status
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(checkPaymentStatus, checkInterval);
+        });
+    </script>
+</body>
 </html>

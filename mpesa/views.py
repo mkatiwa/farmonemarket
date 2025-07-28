@@ -1,9 +1,12 @@
 import os, base64, requests, re, json
 
-from django.shortcuts import render
+from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import render, redirect
+from django.views import View
 from dotenv import load_dotenv
 from datetime import datetime
-from django.http import JsonResponse, HttpResponseBadRequest
+from django.http import JsonResponse, HttpResponseBadRequest, request, response
 from django.views.decorators.csrf import csrf_exempt
 from carts.models import Cart
 from .forms import PaymentForm
@@ -22,185 +25,175 @@ MPESA_BASE_URL = os.getenv("MPESA_BASE_URL")
 
 # Create your views here.
 
-def generate_access_token():
-    """
-    Get an access token for M-pesa APIs.
-
-    Make a GET request to the token endpoint and return the access token
-    obtained from the response.
-
-    Raises:
-        Exception: If the request fails or if the response does not contain
-            an access token.
-    """
-    try:
-        credentials = f'{CONSUMER_KEY}:{CONSUMER_SECRET}'
-        encoded_credentials = base64.b64encoded(credentials.encode()).decode()
-
-        headers = {
-            "Authorization": f"Basic {encoded_credentials}",
-            "Content-Type": "application/json",
-        }
-        response = requests.get(
-            f"{MPESA_BASE_URL}/oauth/v1/generate?grant_type=client_credentials",
-            headers=headers,
-        ).json()
-
-        if "access_token" in response:
-            return response['access_token']
-        else:
-            raise Exception('Access toekn missing in response')
-    except requests.RequestException as e:
-        raise Exception(f"Failed to connect to M-pesa: {str(e)}")
+class InitiatePaymentView(LoginRequiredMixin, View):
 
 
-def initiate_stk_push(phone, amount):
-    try:
-        token = generate_access_token
-        headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
+    def post(self, request):
+        try:
+            phone = request.POST.get('phone_number')
+            amount = request.POST.get('amount')
 
-        timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
-        stk_password = base64.b64encode(
-            ((MPESA_SHORTCODE + MPESA_PASSKEY + timestamp).encode())
-        ).decode()
+            if not phone or not amount:
+                messages.error(request, "Phone number and amount are required")
+                return redirect('carts:checkout')
 
-        request_body = {
-            "BusinessShortCode": MPESA_SHORTCODE,
-            "Password": stk_password,
-            "Timestamp": timestamp,
-            "TransactionType": "CustomerPayBillonline",
-            "Amount": amount,
-            "PartyA": phone,
-            "PartyB": MPESA_SHORTCODE,
-            "PhoneNumber": phone,
-            "CallBackURL": CALLBACK_URL,
-            "AccountReference": "account",
-            "TransactionDesc": "Payment for goods",
-        }
-
-        response = requests.post(
-            f"{MPESA_BASE_URL}/mpesa/stkpush/v1/processrequest",
-            json=request_body,
-            headers=headers,
-        ).json()
-
-        return response
-    except Exception as e:
-        print(f"Failed to initiate STK Push: {str(e)}")
-        return e
+            # Format phone number
+            phone = self.format_phone_number(phone)
 
 
-def format_phone_number(phone):
-    phone = phone.replace("+", "")
-    if re.match(r"^254\d{9}$", phone):
-        return phone
-    elif phone.startswith("0") and len(phone) == 10:
-        return "254" + phone[1:]
-    else:
-        raise ValueError("Invalid phone number format")
+            if response.get("ResponseCode") == "0":
+                #Create a transaction record
+                Transaction.objects.create(
+                    user=request.user,
+                    phone=phone,
+                    amount=amount,
+                    checkout_request_id=response["CheckoutRequestID"],
+                    status='pending'
+                )
+                return render(request, 'mpesa/pending.html', {
+                    'checkout_request_id': response["CheckoutRequestID"]
+                })
+            else:
+                error = response.get("errorMessage", "Failed to initiate payment")
+                messages.error(request, error)
+                return redirect('carts:checkout.html')
+
+        except Exception as e:
+            messages.error(request, str(e))
+            return redirect('carts:checkout.html')
 
 
-def payment_view(request):
-    if request.method == "POST":
-        form = PaymentForm(request.POST)
-        if form.is_valid():
-            try:
-                # Get cart total
-                cart = Cart.objects.get(user=request.user)
-                total_amount = cart.get_total()
 
-                # Format phone number
-                phone = format_phone_number(form.cleaned_data['phone_number'])
+    def format_phone_number(self, phone):
+        phone = phone.replace("+", "").replace(" ", "")
+        if re.match(r"^254\d{9}$", phone):
+            return phone
+        elif phone.startswith("0") and len(phone) == 10:
+            return "254" + phone[1:]
+        raise ValueError("Invalid phone number format. Use 2547XXXXXXXX or 07XXXXXXXX")
 
-                # Call STK push
-                response = initiate_stk_push(phone, int(total_amount))
 
-                if response.get("ResponseCode") == "0":
-                    checkout_request_id = response["CheckoutRequestID"]
-                    return render(request, 'mpesa/pending.html', {"checkout_request_id": checkout_request_id})
-                else:
-                    error_message = response.get("errorMessage", "Failed to send STK push. Please try again.")
-                    return render(request, "mpesa/payment_form", {"form": form, "errorMessage": error_message})
-            except Cart.DoesNotExist:
-                return render(request, "mpesa/payment_form", {"form": form, "errorMessage": "Cart not found."})
-    else:
-        form = PaymentForm()
-    return render(request, "mpesa/payment_form", {"form": form})
+    def generate_access_token(self):
+        try:
+            credentials = f"{CONSUMER_KEY}:{CONSUMER_SECRET}"
+            encoded_credentials = base64.b64encode(credentials.encode()).decode()
+
+            headers = {
+                "Authorization": f"Basic {encoded_credentials}",
+                "Content-Type": "application/json",
+            }
+
+            response = requests.get(
+                f"{MPESA_BASE_URL}/oauth/v1/generate?grant_type=client_credentials",
+                headers=headers,
+                timeout=30
+            ).json()
+
+            if "access_token" in response:
+                return response['access_token']
+            raise Exception("Access token missing in response")
+        except Exception as e:
+            raise Exception(f"Failed to get access token: {str(e)}")
+
+
+    def initiate_stk_push(self, phone, amount):
+        try:
+            token = self.generate_access_token()
+            headers = {
+                "Authorization": f"Bearer {token}",
+                "Content-Type": "application/json"
+            }
+
+            timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
+            stk_password = base64.b64encode(
+                (MPESA_SHORTCODE + MPESA_PASSKEY + timestamp).encode()
+            ).decode()
+
+
+            payload = {
+                "BusinessShortCode": MPESA_SHORTCODE,
+                "Password": stk_password,
+                "Timestamp": timestamp,
+                "TransactionType": "CustomerPayBillOnline",
+                "Amount": amount,
+                "PartyA": phone,
+                "PartyB": MPESA_SHORTCODE,
+                "PhoneNumber": phone,
+                "CallBackURL": CALLBACK_URL,
+                "AccountReference": "Farm2Market",
+                "TransactionDesc": "Payment for goods"
+            }
+            response = requests.post(
+                f"{MPESA_BASE_URL}/mpesa/stkpush/v1/processrequest",
+                json=payload,
+                headers=headers,
+                timeout=30
+            )
+            response.raise_for_status()
+            return response.json()
+        except requests.exceptions.RequestException as e:
+            raise Exception(f"STK Push failed: {str(e)}")
 
 
 @csrf_exempt
 def mpesa_callback(request):
-    if request.method != "POST":
-        return HttpResponseBadRequest("Only POST request are allowed")
-    try:
-        # parse the callback dat from the request body
-        callback_data = json.loads(request.body)
-        # check the result code
-        result_code = callback_data["Body"]["stkCallback"]["ResultCode"]
-        if result_code != 0:
-            # Handle unsuccefull transaction
-            error_message = callback_data["Body"]["stkCallback"]["ResultCode"]
-            return JsonResponse({"ResultCode": result_code, "ResultDesc": error_message})
-        # Extract metadata from the callback
-        checkout_id = callback_data["Body"]["stkCallback"]["CheckoutRequestID"]
-        body = callback_data["Body"]["stkCallback"]["CallbackMetadata"]["Item"]
-        # Find specific fields in the metadata
-        amount = next(item["Value"] for item in body if item["Name"] == "Amount")
-        mpesa_code = next(item["Value"] for item in body if item["Name"] == "MpesaReceiptNumber")
-        phone = next(item["Value"] for item in body if item["Name"] == "PhoneNumber")
-
-        # save transaction to the database
-        Transaction.objects.create(
-            amount=amount,
-            checkout_id=checkout_id,
-            mpesa_code=mpesa_code,
-            status="Success"
-
-        )
-        # return a success response to mpesa
-        return JsonResponse("success", safe=False)
-    except (json.JSONDecodeError, KeyError) as e:
-        # handle errors gracefully
-        return HttpResponseBadRequest(f"Invalid request data: {str(e)}")
+        if request.method != "POST":
+            return HttpResponseBadRequest("Only POST requests are allowed")
 
 
-def query_stk_push(checkout_request_id):
-    try:
-        token = generate_access_token()
-        headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
-        timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
-        password = base64.b64encode(
-            ((MPESA_SHORTCODE + MPESA_PASSKEY + timestamp).encode())
-        ).decode()
-        request_body = {
-            "BusinessShortCode": MPESA_SHORTCODE,
-            "Password": password,
-            "Timestamp": timestamp,
-            "CheckoutRequstID": checkout_request_id
-        }
-        response = requests.post(
-            f"{MPESA_BASE_URL}/mpesa/stkpushquery/v1/query",
-            json=request_body,
-            headers=headers
-        )
-        print(response.json())
-        return response.json()
-    except requests.RequestException as e:
-        print(f"Error querying STK status: {str(e)}")
-        return {"error": str(e)}
-
-
-def stk_status_view(request):
-    if request.method == 'POST':
         try:
-            # parse the JSON body
+            callback_data = json.loads(request.body)
+            result_code = callback_data["Body"]["stkCallback"]["ResultCode"]
+            checkout_request_id = callback_data["Body"]["stkCallback"]["CheckoutRequestID"]
+            if result_code == 0:
+                # Successful payment
+                metadata = callback_data["Body"]["stkCallback"]["CallbackMetadata"]["Item"]
+                amount = next(item["Value"] for item in metadata if item["Name"] == "Amount")
+                receipt = next(item["Value"] for item in metadata if item["Name"] == "MpesaReceiptNumber")
+                phone = next(item["Value"] for item in metadata if item["Name"] == "PhoneNumber")
+
+                Transaction.objects.filter(
+                    checkout_request_id=checkout_request_id
+                ).update(
+                    mpesa_code=receipt,
+                    status='completed',
+                    phone=phone,
+                    amount=amount
+                )
+            # Here you would typically create an order as well
+            else:
+                # Failed payment
+                Transaction.objects.filter(
+                    checkout_request_id=checkout_request_id
+                ).update(
+                    status='failed',
+                    error_message=callback_data["Body"]["stkCallback"]["ResultDesc"]
+                )
+            return JsonResponse({"ResultCode": 0, "ResultDesc": "Success"})
+        except Exception as e:
+            return JsonResponse({"ResultCode": 1, "ResultDesc": str(e)})
+
+
+class PaymentStatusView(LoginRequiredMixin, View):
+    def post(self, request):
+        try:
             data = json.loads(request.body)
-            checkout_request_id = data.get('checkout_request_id')
+            checkout_id = data.get('checkout_request_id')
 
-            # Query the STK push status using your backend function
-            status = query_stk_push(checkout_request_id)
 
-            # Return the status as a JSON response
-            return JsonResponse({"status": status})
-        except json.JSONDecodeError:
-            return JsonResponse({"error": "Invalid JSON body"}, status=400)
+            if not checkout_id:
+                return JsonResponse({'error': 'Missing checkout ID'}, status=400)
+
+            transaction = Transaction.objects.get(
+                checkout_request_id=checkout_id,
+                user=request.user
+            )
+            return JsonResponse({
+                'status': transaction.status,
+                'message': transaction.error_message or '',
+                'mpesa_code': transaction.mpesa_code or ''
+            })
+        except Transaction.DoesNotExist:
+            return JsonResponse({'error': 'Transaction not found'}, status=404)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)

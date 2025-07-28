@@ -10,5 +10,7 @@ class Transaction(models.Model):
     status = models.CharField(max_length=20)
     timestamp = models.DateTimeField(auto_now_add=True)
 
+
+
     def _str_(self):
         return f"{self.mpesa_code} - {self.amount} KES"
