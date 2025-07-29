@@ -38,9 +38,9 @@ DEBUG = os.environ.get('DJANGO_DEBUG', 'False') == 'False'
 if not DEBUG:
     ALLOWED_HOSTS = ['*']  # Configure properly for production
 
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1,mawia.thisisemmanuel.pro').split(',')
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1,farm2market.xyz/products/').split(',')
 
-CSRF_TRUSTED_ORIGINS = os.environ.get('CSRF_TRUSTED_ORIGINS', 'https://mawia.thisisemmanuel.pro').split(',')
+CSRF_TRUSTED_ORIGINS = os.environ.get('CSRF_TRUSTED_ORIGINS', 'https://farm2market.xyz/products/').split(',')
 
 # Application definition
 
