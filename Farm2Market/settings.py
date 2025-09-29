@@ -67,6 +67,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -143,18 +144,40 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+from django.utils.translation import gettext_lazy as _
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Default language
+LANGUAGE_CODE = 'en'
+
+# List of supported languages
+LANGUAGES = [
+    ('en', _('English')),
+    ('fr', _('French')),
+    ('sw', _('Swahili')),  # You can add more here
+]
+
+# Location where translations will be stored
+LOCALE_PATHS = [
+    BASE_DIR / 'locale',
+]
+
+# Enable internationalization
+USE_I18N = True
 
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
-
-TIME_ZONE = 'UTC'
-
-USE_I18N = True
-
-USE_TZ = True
+# LANGUAGE_CODE = 'en-us'
+#
+# TIME_ZONE = 'UTC'
+#
+# USE_I18N = True
+#
+# USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
