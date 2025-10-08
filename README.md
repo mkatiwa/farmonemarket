@@ -8,7 +8,7 @@
 https://drive.google.com/file/d/1Xadrl1zrFMJq6oi6kJ1rjWhXq3uFtZis/view?usp=sharing
 
 ## link to the deployed version 
-https://mawia.thisisemmanuel.pro/products/
+https://farm2market.xyz/products/
 
 ## Link to zip file
 https://alueducation.instructure.com/courses/2050/assignments/28964/submissions/834?comment_id=206563&download=344050
